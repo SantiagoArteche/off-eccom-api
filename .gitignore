@@ -1,0 +1,4 @@
+/dist
+/postgres
+/node_modules
+.env
