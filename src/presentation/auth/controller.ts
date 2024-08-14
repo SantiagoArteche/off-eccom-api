@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service";
+import { CustomError } from "../../domain/errors/custom-errors";
 
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -19,17 +20,17 @@ export class AuthController {
           .status(200)
           .send(user)
       )
-      .catch((error) => res.status(400).send(error));
+      .catch((error) => CustomError.handleErrors(error, res));
   };
 
   validateUser = (req: Request, res: Response) => {
     const { cookie } = req.headers;
 
-    if (!cookie) return { ok: false, msg: "Cookie not found" };
+    if (!cookie) return res.status(404).send("Cookie not found");
 
     this.authService
       .validate(cookie)
       .then((userValidated) => res.status(200).send(userValidated))
-      .catch((error) => res.status(400).send(error));
+      .catch((error) => CustomError.handleErrors(error, res));
   };
 }

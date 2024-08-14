@@ -12,13 +12,18 @@ export class UpdateUserDTO {
 
     if (age && isNaN(age)) return ["Age should be a number"];
 
+    if (email && typeof email !== "string") return ["Email must be a string"];
     if (email && !email.includes("@")) return ["Invalid email"];
     if ((email && email.length < 8) || email.length > 40)
       return ["Email must have more than 7 and less than characters 40"];
 
+    if (firstName && typeof firstName !== "string")
+      return ["Firstname must be a string"];
     if (firstName && (firstName.length < 4 || firstName.length > 30))
       return ["Firstname must have more than 3  and less than characters 30"];
 
+    if (lastName && typeof lastName !== "string")
+      return ["Lastname must be a string"];
     if (lastName && (lastName.length < 4 || lastName.length > 30))
       return ["Lastname must have more than 3  and less than characters 30"];
 

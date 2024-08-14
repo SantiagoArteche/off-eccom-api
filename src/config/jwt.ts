@@ -9,8 +9,6 @@ export class Jwt {
         process.env.SECRET_JWT!,
         { expiresIn: duration },
         (error, token) => {
-          console.log(error);
-
           if (error) return reject(error);
 
           resolve(token);

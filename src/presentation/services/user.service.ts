@@ -1,6 +1,7 @@
 import { Bcrypt } from "../../config/bcrypt";
 import { prisma } from "../../data/postgres/init";
 import { PaginationDTO, CreateUserDTO, UpdateUserDTO } from "../../domain/dtos";
+import { CustomError } from "../../domain/errors/custom-errors";
 
 export class UserService {
   async getAll({ limit, page }: PaginationDTO) {
@@ -14,48 +15,38 @@ export class UserService {
       ]);
 
       return {
-        ok: true,
         currentPage: page,
         limit,
-        nextPage: `/api/users?page=${page + 1}&limit=${limit}`,
-        prevPage:
-          page === 1 ? null : `/api/users?page=${page - 1}&limit=${limit}`,
-        totalUsers: totalUsers,
+        prev: page <= 1 ? null : `/api/users?page=${page - 1}&limit=${limit}`,
+        next: `/api/users?page=${page + 1}&limit=${limit}`,
+        totalUsers,
         users,
       };
     } catch (error) {
-      return { ok: false, msg: error };
+      throw error;
     }
   }
 
-  async getOne(id: string) {
+  async getById(id: string) {
     try {
-      const user = await prisma.user.findFirst({
+      const user = await prisma.user.findUnique({
         where: {
           id,
         },
       });
 
-      if (!user) return { ok: false, msg: "User not found" };
+      if (!user) throw CustomError.notFound("User not found");
 
       const { password, ...rest } = user;
 
-      return { ok: true, user: rest };
+      return { user: rest };
     } catch (error) {
-      return { ok: false, msg: error };
+      throw error;
     }
   }
 
   async create(createUserDto: CreateUserDTO) {
     try {
-      const alreadyExist = await prisma.user.findFirst({
-        where: {
-          email: createUserDto.email,
-        },
-      });
-
-      if (alreadyExist) return { ok: false, msg: "User already exist" };
-
       const newUser = await prisma.user.create({
         data: {
           ...createUserDto,
@@ -66,23 +57,22 @@ export class UserService {
       const { password, ...rest } = newUser;
 
       return {
-        ok: true,
         msg: "User Created",
         user: rest,
       };
-    } catch (error) {
-      return {
-        ok: false,
-        msg: error,
-      };
+    } catch (error: any) {
+      if (error.code === "P2002")
+        throw CustomError.badRequest("Email already in use");
+
+      throw error;
     }
   }
 
   async update(updateUserDto: UpdateUserDTO, id: string) {
     try {
-      const user = await prisma.user.findFirst({ where: { id } });
+      const user = await prisma.user.findUnique({ where: { id } });
 
-      if (!user) return { ok: false, msg: "User not found" };
+      if (!user) throw CustomError.notFound("User not found");
 
       const updateUser = await prisma.user.update({
         where: {
@@ -99,32 +89,24 @@ export class UserService {
 
       const { password, role, ...rest } = updateUser;
 
-      return { ok: true, msg: `User Updated`, user: rest };
+      return { msg: `User Updated`, user: rest };
     } catch (error: any) {
       if (error.code === "P2002")
-        return { ok: false, msg: "Mail already in use" };
+        throw CustomError.badRequest("Email already in use");
 
-      return { ok: false, msg: error };
+      throw error;
     }
   }
 
   async delete(id: string) {
     try {
-      const user = await prisma.user.findFirst({ where: { id } });
+      const user = await prisma.user.delete({ where: { id } });
 
-      if (!user) return { ok: false, msg: "User not found" };
-
-      const { email, id: deletedId } = await prisma.user.delete({
-        where: { id: user?.id },
-      });
-
-      return {
-        ok: true,
-        msg: "User Deleted",
-        deleteUser: { id: deletedId, email: email },
-      };
+      return `User with id ${user?.id} was deleted`;
     } catch (error: any) {
-      return { ok: false, msg: error };
+      if (error.code === "P2025") throw CustomError.notFound("User not found");
+
+      throw error;
     }
   }
 }
