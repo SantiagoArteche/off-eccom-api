@@ -1,4 +1,4 @@
-import { AppRoutes } from "./presentation/router";
+import { AppRoutes } from "./presentation/routes";
 import { Server } from "./presentation/server";
 
 (async () => {

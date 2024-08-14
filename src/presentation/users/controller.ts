@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { CreateUserDTO } from "../../domain/dtos/users/create-user.dto";
 import { UserService } from "../services/user.service";
 import { PaginationDTO } from "../../domain/dtos/shared/pagination.dto";
@@ -34,7 +34,6 @@ export class UserController {
 
   createUser = (req: Request, res: Response) => {
     const [error, createUserDto] = CreateUserDTO.create(req.body)!;
-
     if (error) return res.status(400).send({ ok: false, msg: error });
 
     this.userService

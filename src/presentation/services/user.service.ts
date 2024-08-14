@@ -1,3 +1,4 @@
+import { Bcrypt } from "../../config/bcrypt";
 import { prisma } from "../../data/postgres/init";
 import { PaginationDTO, CreateUserDTO, UpdateUserDTO } from "../../domain/dtos";
 
@@ -11,6 +12,7 @@ export class UserService {
         }),
         prisma.user.count(),
       ]);
+
       return {
         ok: true,
         currentPage: page,
@@ -40,7 +42,7 @@ export class UserService {
 
       return { ok: true, user: rest };
     } catch (error) {
-      return error;
+      return { ok: false, msg: error };
     }
   }
 
@@ -52,10 +54,13 @@ export class UserService {
         },
       });
 
-      if (alreadyExist) throw { ok: false, msg: "User already exist" };
+      if (alreadyExist) return { ok: false, msg: "User already exist" };
 
       const newUser = await prisma.user.create({
-        data: createUserDto,
+        data: {
+          ...createUserDto,
+          password: Bcrypt.hashPassword(createUserDto.password),
+        },
       });
 
       const { password, ...rest } = newUser;
@@ -83,7 +88,13 @@ export class UserService {
         where: {
           id: user.id,
         },
-        data: { ...updateUserDto!, id: id },
+        data: {
+          ...updateUserDto,
+          password:
+            updateUserDto.password &&
+            Bcrypt.hashPassword(updateUserDto.password),
+          id: id,
+        },
       });
 
       const { password, role, ...rest } = updateUser;
@@ -103,11 +114,15 @@ export class UserService {
 
       if (!user) return { ok: false, msg: "User not found" };
 
-      const deleteUser = await prisma.user.delete({
+      const { email, id: deletedId } = await prisma.user.delete({
         where: { id: user?.id },
       });
 
-      return { ok: true, msg: "User Deleted", deleteUser };
+      return {
+        ok: true,
+        msg: "User Deleted",
+        deleteUser: { id: deletedId, email: email },
+      };
     } catch (error: any) {
       return { ok: false, msg: error };
     }
