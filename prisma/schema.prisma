@@ -19,12 +19,13 @@ enum Role {
 }
 
 model User {
-  id        String @id @default(uuid())
-  firstName String
-  lastName  String
-  password  String
-  email     String @unique
-  age       Int
+  id          String  @id @default(uuid())
+  firstName   String
+  lastName    String
+  password    String
+  email       String  @unique
+  age         Int
+  isValidated Boolean @default(false)
 
   role Role @default(user)
 }

@@ -21,4 +21,15 @@ export class AuthController {
       )
       .catch((error) => res.status(400).send(error));
   };
+
+  validateUser = (req: Request, res: Response) => {
+    const { cookie } = req.headers;
+
+    if (!cookie) return { ok: false, msg: "Cookie not found" };
+
+    this.authService
+      .validate(cookie)
+      .then((userValidated) => res.status(200).send(userValidated))
+      .catch((error) => res.status(400).send(error));
+  };
 }

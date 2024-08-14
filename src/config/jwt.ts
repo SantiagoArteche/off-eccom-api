@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 export class Jwt {
-  static createToken = <T>(payload: any, duration: string = "2h") => {
+  static createToken = (payload: any, duration: string = "2h") => {
     return new Promise((resolve, reject) => {
       jwt.sign(
         payload as any,
@@ -16,6 +16,16 @@ export class Jwt {
           resolve(token);
         }
       );
+    });
+  };
+
+  static verifyToken = <T>(token: string): Promise<T | null> => {
+    return new Promise((resolve, reject) => {
+      jwt.verify(token, process.env.SECRET_JWT!, (error, decoded) => {
+        if (error) return reject(error);
+
+        resolve(decoded as T);
+      });
     });
   };
 }
