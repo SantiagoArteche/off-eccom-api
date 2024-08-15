@@ -1,7 +1,47 @@
 import { prisma } from "../../data/postgres/init";
 import { CreateCartItemDTO } from "../../domain/dtos/cart/create-cart-item.dto";
 import { CustomError } from "../../domain/errors/custom-errors";
+import { PaginationDTO } from "../../domain/dtos/shared/pagination.dto";
 export class CartService {
+  async get({ page, limit }: PaginationDTO) {
+    try {
+      const [allCarts, totalCarts] = await Promise.all([
+        prisma.cart.findMany({
+          skip: (page - 1) * limit,
+          take: limit,
+        }),
+        prisma.cart.count(),
+      ]);
+
+      return {
+        currentPage: page,
+        limit,
+        prev: page <= 1 ? null : `/api/cart?page=${page - 1}&limit=${limit}`,
+        next: `/api/cart?page=${page + 1}&limit=${limit}`,
+        totalCarts,
+        allCarts,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getById(id: string) {
+    try {
+      const cart = await prisma.cart.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!cart) throw CustomError.notFound("Cart not found");
+
+      return { cart };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async add(
     productId: string,
     cartId: string,
@@ -24,100 +64,103 @@ export class CartService {
       if (!product || !cart)
         throw CustomError.badRequest("Product or Cart not found");
 
-      const prodInCart = await prisma.cart.findFirst({
-        where: {
-          id: cartId,
-        },
-        include: {
-          CartItem: {
-            select: {
-              productId: true,
-              id: true,
-              quantity: true,
+      const addProd = await prisma.$transaction(async (transaction) => {
+        const prodInCart = await transaction.cart.findFirst({
+          where: {
+            id: cartId,
+          },
+          include: {
+            CartItem: {
+              select: {
+                productId: true,
+                id: true,
+                quantity: true,
+              },
             },
           },
-        },
+        });
+
+        const isInCart = prodInCart?.CartItem.find(
+          (prod) => prod.productId === product.id
+        );
+
+        let item;
+        if (isInCart) {
+          item = await transaction.cartItem.update({
+            where: {
+              id: isInCart.id,
+              productId: product?.id,
+            },
+            data: {
+              quantity: isInCart.quantity + createCartItemDto.quantity,
+            },
+          });
+        } else {
+          item = await transaction.cartItem.create({
+            data: {
+              quantity: createCartItemDto.quantity,
+              productId: product.id,
+              cartId: cart.id,
+            },
+          });
+        }
+
+        const tax =
+          cart.tax + createCartItemDto.quantity * product.price * 0.21;
+        const subTotal =
+          cart.subtotal + createCartItemDto.quantity * product.price;
+
+        let updatedCart;
+        if (!isInCart) {
+          updatedCart = await transaction.cart.update({
+            where: {
+              id: cart.id,
+            },
+
+            data: {
+              cartItemId: [...cart.cartItemId, item.id],
+              subtotal: subTotal,
+              tax,
+              total: tax + subTotal,
+            },
+          });
+        } else {
+          updatedCart = await transaction.cart.update({
+            where: {
+              id: cart.id,
+            },
+            data: {
+              subtotal: subTotal,
+              tax,
+              total: tax + subTotal,
+              cartItemId: cart.cartItemId,
+            },
+          });
+        }
+
+        if (updatedCart) {
+          if (product.stock === 0)
+            throw CustomError.badRequest("Product out of stock");
+
+          if (product.stock < createCartItemDto.quantity)
+            throw CustomError.badRequest(
+              `We only have ${product.stock} units of ${product.name}, change your quantity!`
+            );
+
+          await transaction.products.update({
+            where: {
+              id: product.id,
+            },
+            data: {
+              stock: product.stock - createCartItemDto.quantity,
+            },
+          });
+        }
+
+        return updatedCart;
       });
 
-      const isInCart = prodInCart?.CartItem.find(
-        (prod) => prod.productId === product.id
-      );
-
-      let createItem;
-      if (isInCart) {
-        createItem = await prisma.cartItem.update({
-          where: {
-            id: isInCart.id,
-            productId: product?.id,
-          },
-          data: {
-            quantity: isInCart.quantity + createCartItemDto.quantity,
-          },
-        });
-      } else {
-        createItem = await prisma.cartItem.create({
-          data: {
-            quantity: createCartItemDto.quantity,
-            productId: product.id,
-            cartId: cart.id,
-          },
-        });
-      }
-
-      const tax = cart.tax + createCartItemDto.quantity * product.price * 0.21;
-      const subTotal =
-        cart.subtotal + createCartItemDto.quantity * product.price;
-
-      let updatedCart;
-      if (!isInCart) {
-        updatedCart = await prisma.cart.update({
-          where: {
-            id: cart.id,
-          },
-          data: {
-            cartItemId: [...cart.cartItemId, createItem.id],
-            subtotal: subTotal,
-            tax,
-            total: tax + subTotal,
-          },
-        });
-      } else {
-        updatedCart = await prisma.cart.update({
-          where: {
-            id: cart.id,
-          },
-          data: {
-            subtotal: subTotal,
-            tax,
-            total: tax + subTotal,
-            cartItemId: cart.cartItemId,
-          },
-        });
-      }
-
-      if (updatedCart) {
-        if (product.stock === 0)
-          throw CustomError.badRequest("Product out of stock");
-
-        if (product.stock < createCartItemDto.quantity)
-          throw CustomError.badRequest(
-            `We only have ${product.stock} units, change your quantity!`
-          );
-
-        await prisma.products.update({
-          where: {
-            id: product.id,
-          },
-          data: {
-            stock: product.stock - createCartItemDto.quantity,
-          },
-        });
-      }
-
-      return {
-        msg: "Cart Updated",
-        updatedCart,
-      };
+      return { msg: "Cart Updated", updatedCart: addProd };
     } catch (error) {
       throw error;
     }
@@ -147,6 +190,37 @@ export class CartService {
       if (error.code === "P2002")
         throw CustomError.badRequest("An user can create only one cart");
 
+      throw error;
+    }
+  }
+
+  async delete(id: string) {
+    try {
+      const cart = await prisma.cart.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!cart) throw CustomError.notFound("Cart not found");
+
+      cart.cartItemId.forEach(async (cartItem) => {
+        await prisma.cartItem.deleteMany({
+          where: {
+            id: cartItem,
+            cartId: cart.id,
+          },
+        });
+      });
+
+      await prisma.cart.delete({
+        where: {
+          id: cart.id,
+        },
+      });
+
+      return `Cart with id ${cart.id} was deleted`;
+    } catch (error) {
       throw error;
     }
   }

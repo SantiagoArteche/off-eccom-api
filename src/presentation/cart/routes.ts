@@ -9,8 +9,12 @@ export class CartRoutes {
     const cartService = new CartService();
     const cartController = new CartController(cartService);
 
+    router.get("/", cartController.getCarts);
+
+    router.get("/:id", cartController.getCartById);
     router.post("/:productId/:cartId", cartController.addProductToCart);
     router.post("/:userId", cartController.createCart);
+    router.delete("/:id", cartController.deleteCart);
 
     return router;
   }
