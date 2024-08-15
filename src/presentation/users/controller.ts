@@ -1,7 +1,7 @@
-import type { Request, Response } from "express";
-import { UserService } from "../services/user.service";
-import { PaginationDTO, CreateUserDTO, UpdateUserDTO } from "../../domain/dtos";
 import { CustomError } from "../../domain/errors/custom-errors";
+import { PaginationDTO, CreateUserDTO, UpdateUserDTO } from "../../domain/dtos";
+import { UserService } from "../services/user.service";
+import type { Request, Response } from "express";
 
 export class UserController {
   constructor(private readonly userService: UserService) {}

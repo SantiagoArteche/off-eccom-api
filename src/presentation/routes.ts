@@ -1,8 +1,9 @@
+import { AuthRoutes } from "./auth/routes";
+import { CategoryRoutes } from "./categories/routes";
+import { ProductRoutes } from "./products/routes";
 import { Router } from "express";
 import { UserRoutes } from "./users/routes";
-import { AuthRoutes } from "./auth/routes";
-import { ProductRoutes } from "./products/routes";
-import { CategoryRoutes } from "./categories/routes";
+import { CartRoutes } from "./cart/routes";
 
 export class AppRoutes {
   static get routes() {
@@ -12,6 +13,7 @@ export class AppRoutes {
     router.use("/api/auth", AuthRoutes.routes);
     router.use("/api/products", ProductRoutes.routes);
     router.use("/api/categories", CategoryRoutes.routes);
+    router.use("/api/cart", CartRoutes.routes);
 
     return router;
   }

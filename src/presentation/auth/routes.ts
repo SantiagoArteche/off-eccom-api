@@ -1,6 +1,6 @@
-import { Router } from "express";
 import { AuthController } from "./controller";
 import { AuthService } from "../services/auth.service";
+import { Router } from "express";
 
 export class AuthRoutes {
   static get routes() {

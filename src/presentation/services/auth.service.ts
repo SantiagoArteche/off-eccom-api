@@ -1,6 +1,6 @@
-import { prisma } from "../../data/postgres/init";
 import { Bcrypt, Jwt } from "../../config/";
 import { CustomError } from "../../domain/errors/custom-errors";
+import { prisma } from "../../data/postgres/init";
 
 export class AuthService {
   async login(email: string, password: string) {
@@ -13,7 +13,7 @@ export class AuthService {
 
       if (!user) throw CustomError.notFound("User not found");
 
-      if (!Bcrypt.compareHash(password.toString(), user.password))
+      if (!Bcrypt.comparePasswords(password, user.password))
         throw CustomError.badRequest("Password incorrect");
 
       const { password: pass, role, ...rest } = user;
@@ -30,6 +30,7 @@ export class AuthService {
       throw error;
     }
   }
+
   async validate(cookie: string) {
     const accessToken = cookie.split(";")[0];
     const tokenValue = accessToken.split("=")[1];

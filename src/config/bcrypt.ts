@@ -1,10 +1,10 @@
-import bcrypt from "bcrypt";
 import "dotenv/config";
+import bcrypt from "bcrypt";
 
 export class Bcrypt {
   static hashPassword = (password: string) =>
     bcrypt.hashSync(password, +process.env.SALT!);
 
-  static compareHash = (password: string, hashPasword: string) =>
+  static comparePasswords = (password: string, hashPasword: string) =>
     bcrypt.compareSync(password, hashPasword);
 }

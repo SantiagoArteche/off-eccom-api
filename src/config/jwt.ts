@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
 import "dotenv/config";
+import jwt from "jsonwebtoken";
 
 export class Jwt {
   static createToken = (payload: any, duration: string = "2h") => {

@@ -1,6 +1,6 @@
-import { Router } from "express";
 import { CategoryController } from "./controller";
 import { CategoryService } from "../services/category.service";
+import { Router } from "express";
 
 export class CategoryRoutes {
   static get routes() {

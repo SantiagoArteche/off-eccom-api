@@ -16,19 +16,23 @@ model User {
   age         Int
   isValidated Boolean @default(false)
   role        Role    @default(user)
+
+  Cart Cart?
 }
 
 model Products {
   id        String   @id @default(uuid())
   name      String   @unique
-  category  String   @unique
+  category  String
   price     Float
   stock     Int
   lowStock  Boolean
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  categoryToProducts Category @relation(fields: [category], references: [name])
+  categoryRel Category @relation(fields: [category], references: [name])
+
+  CartItem CartItem[]
 }
 
 model Category {
@@ -37,7 +41,41 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Products Products?
+  Products Products[]
+}
+
+model Cart {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  placeOrder Boolean  @default(false)
+  total      Float    @default(0)
+  subtotal   Float    @default(0)
+  tax        Float    @default(0)
+  cartItemId String[]
+
+  user     User       @relation(fields: [userId], references: [id])
+  Order    Order[]
+  CartItem CartItem[]
+}
+
+model CartItem {
+  id        String @id @default(uuid())
+  quantity  Int
+  productId String
+  cartId    String
+
+  product Products @relation(fields: [productId], references: [id])
+  cart    Cart     @relation(fields: [cartId], references: [id])
+}
+
+model Order {
+  id        String    @id @default(uuid())
+  cartId    String
+  createdAt DateTime
+  isPaid    Boolean   @default(false)
+  paidAt    DateTime?
+
+  cart Cart @relation(fields: [cartId], references: [id])
 }
 
 enum Role {

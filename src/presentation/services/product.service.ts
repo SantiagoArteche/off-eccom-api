@@ -1,8 +1,8 @@
-import { prisma } from "../../data/postgres/init";
-import { PaginationDTO } from "../../domain/dtos";
 import { CreateProductDTO } from "../../domain/dtos/products/create-product.dto";
-import { UpdateProductDTO } from "../../domain/dtos/products/update-product.dto";
 import { CustomError } from "../../domain/errors/custom-errors";
+import { PaginationDTO } from "../../domain/dtos";
+import { prisma } from "../../data/postgres/init";
+import { UpdateProductDTO } from "../../domain/dtos/products/update-product.dto";
 
 export class ProductService {
   async getAll(paginationDto: PaginationDTO) {
@@ -49,12 +49,16 @@ export class ProductService {
 
   async create(createProductDto: CreateProductDTO) {
     try {
+      console.log(createProductDto);
+
       const newProduct = await prisma.products.create({
         data: createProductDto,
       });
 
       return { product: newProduct };
     } catch (error: any) {
+      console.log(error);
+
       if (error.code === "P2002")
         throw CustomError.badRequest("Product with that name already exist");
 

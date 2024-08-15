@@ -1,8 +1,10 @@
-import { prisma } from "../../data/postgres/init";
-import { PaginationDTO } from "../../domain/dtos";
-import { CreateCategoryDTO } from "../../domain/dtos/categories/create-category.dto";
-import { UpdateCategoryDTO } from "../../domain/dtos/categories/update-category.dto";
 import { CustomError } from "../../domain/errors/custom-errors";
+import { prisma } from "../../data/postgres/init";
+import {
+  CreateCategoryDTO,
+  PaginationDTO,
+  UpdateCategoryDTO,
+} from "../../domain/dtos";
 
 export class CategoryService {
   async getAll({ limit, page }: PaginationDTO) {

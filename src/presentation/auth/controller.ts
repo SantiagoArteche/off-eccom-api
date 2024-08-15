@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service";
 import { CustomError } from "../../domain/errors/custom-errors";
+import { Request, Response } from "express";
 
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -9,7 +9,7 @@ export class AuthController {
     const { email, password } = req.body;
 
     this.authService
-      .login(email, password)
+      .login(email, password.toString())
       .then((user) =>
         res
           .cookie("access_token", user.token, {

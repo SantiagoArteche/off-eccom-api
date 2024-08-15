@@ -1,7 +1,7 @@
 import { Bcrypt } from "../../config/bcrypt";
-import { prisma } from "../../data/postgres/init";
-import { PaginationDTO, CreateUserDTO, UpdateUserDTO } from "../../domain/dtos";
 import { CustomError } from "../../domain/errors/custom-errors";
+import { PaginationDTO, CreateUserDTO, UpdateUserDTO } from "../../domain/dtos";
+import { prisma } from "../../data/postgres/init";
 
 export class UserService {
   async getAll({ limit, page }: PaginationDTO) {

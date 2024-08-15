@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
 import { CategoryService } from "../services/category.service";
+import { CreateCategoryDTO } from "../../domain/dtos/categories/create-category.dto";
 import { CustomError } from "../../domain/errors/custom-errors";
 import { PaginationDTO } from "../../domain/dtos";
-import { CreateCategoryDTO } from "../../domain/dtos/categories/create-category.dto";
+import { Request, Response } from "express";
 import { UpdateCategoryDTO } from "../../domain/dtos/categories/update-category.dto";
 
 export class CategoryController {
@@ -32,7 +32,7 @@ export class CategoryController {
 
   createCategory = (req: Request, res: Response) => {
     const [error, createCategoryDto] = CreateCategoryDTO.create(req.body);
-    
+
     if (error) return res.status(400).send(error);
 
     this.categoryService

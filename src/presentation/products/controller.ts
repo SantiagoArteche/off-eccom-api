@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
+import { CustomError } from "../../domain/errors/custom-errors";
 import { ProductService } from "../services/product.service";
+import { Request, Response } from "express";
 import {
   CreateProductDTO,
   UpdateProductDTO,
   PaginationDTO,
 } from "../../domain/dtos";
-import { CustomError } from "../../domain/errors/custom-errors";
 
 export class ProductsController {
   constructor(private readonly productService: ProductService) {}
