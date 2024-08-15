@@ -49,12 +49,6 @@ export class ProductService {
 
   async create(createProductDto: CreateProductDTO) {
     try {
-      const exist = await prisma.products.findFirst({
-        where: {
-          name: createProductDto.name,
-        },
-      });
-
       const newProduct = await prisma.products.create({
         data: createProductDto,
       });
@@ -64,11 +58,17 @@ export class ProductService {
       if (error.code === "P2002")
         throw CustomError.badRequest("Product with that name already exist");
 
+      if (error.code === "P2003")
+        throw CustomError.badRequest("Category not exists");
+
       throw error;
     }
   }
 
-  async update(id: string, updateProductDto: UpdateProductDTO) {
+  async update(
+    id: string,
+    { category, lowStock, name, price, stock, createdAt }: UpdateProductDTO
+  ) {
     try {
       const product = await prisma.products.findUnique({
         where: {
@@ -82,15 +82,25 @@ export class ProductService {
         where: {
           id: product.id,
         },
-        data: { ...product, ...updateProductDto },
+        data: {
+          category: category ? category : product.category,
+          lowStock: lowStock !== null ? lowStock : product.lowStock,
+          name: name ? name : product.name,
+          price: price ? price : product.price,
+          stock: stock ? stock : product.stock,
+          createdAt: createdAt ? createdAt : product.createdAt,
+        },
       });
 
       return {
-        updatedProduct: updateProduct,
+        updatedProduct: { ...updateProduct },
       };
     } catch (error: any) {
       if (error.code === "P2002")
         throw CustomError.badRequest("Product with that name already exist");
+
+      if (error.code === "P2003")
+        throw CustomError.badRequest("Category not exists");
 
       throw error;
     }

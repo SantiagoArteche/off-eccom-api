@@ -12,7 +12,7 @@ export class UpdateCategoryDTO {
       createdAt = null;
     } else {
       const currentDate = createdAt;
-      createdAt = new Date(createdAt);
+      createdAt = new Date(currentDate);
       if (createdAt.toString() === "Invalid Date") {
         createdAt = new Date();
       }

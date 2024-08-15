@@ -13,6 +13,7 @@ export class CreateProductDTO {
 
     if (!name) return ["Name is required"];
     if (typeof name !== "string") return ["Name must be a string"];
+    if (name.length < 3) return ["Name must have more than 2 characters"];
 
     if (!price) return ["Price is required"];
     if (typeof price !== "number") return ["Price must be a number"];
@@ -23,6 +24,8 @@ export class CreateProductDTO {
 
     if (!category) return ["Category is required"];
     if (typeof category !== "string") return ["Category must be a string"];
+    if (category.length < 3)
+      return ["Category must have more than 2 characters"];
 
     if (!!createdAt === false) {
       createdAt = new Date();

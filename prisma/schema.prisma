@@ -7,11 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  user
-  admin
-}
-
 model User {
   id          String  @id @default(uuid())
   firstName   String
@@ -20,19 +15,20 @@ model User {
   email       String  @unique
   age         Int
   isValidated Boolean @default(false)
-
-  role Role @default(user)
+  role        Role    @default(user)
 }
 
 model Products {
   id        String   @id @default(uuid())
   name      String   @unique
+  category  String   @unique
   price     Float
   stock     Int
   lowStock  Boolean
-  category  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  categoryToProducts Category @relation(fields: [category], references: [name])
 }
 
 model Category {
@@ -40,4 +36,11 @@ model Category {
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  Products Products?
+}
+
+enum Role {
+  user
+  admin
 }

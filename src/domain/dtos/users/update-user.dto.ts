@@ -14,7 +14,7 @@ export class UpdateUserDTO {
 
     if (email && typeof email !== "string") return ["Email must be a string"];
     if (email && !email.includes("@")) return ["Invalid email"];
-    if ((email && email.length < 8) || email.length > 40)
+    if (email && (email.length < 8 || email.length > 40))
       return ["Email must have more than 7 and less than characters 40"];
 
     if (firstName && typeof firstName !== "string")
@@ -32,7 +32,13 @@ export class UpdateUserDTO {
 
     return [
       undefined,
-      new UpdateUserDTO(email, firstName, lastName, password.toString(), age),
+      new UpdateUserDTO(
+        email,
+        firstName,
+        lastName,
+        password && password.toString(),
+        age
+      ),
     ];
   }
 }

@@ -32,7 +32,7 @@ export class CategoryController {
 
   createCategory = (req: Request, res: Response) => {
     const [error, createCategoryDto] = CreateCategoryDTO.create(req.body);
-
+    
     if (error) return res.status(400).send(error);
 
     this.categoryService

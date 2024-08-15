@@ -68,7 +68,10 @@ export class UserService {
     }
   }
 
-  async update(updateUserDto: UpdateUserDTO, id: string) {
+  async update(
+    { age, email, firstName, lastName, password }: UpdateUserDTO,
+    id: string
+  ) {
     try {
       const user = await prisma.user.findUnique({ where: { id } });
 
@@ -79,15 +82,15 @@ export class UserService {
           id: user.id,
         },
         data: {
-          ...updateUserDto,
-          password:
-            updateUserDto.password &&
-            Bcrypt.hashPassword(updateUserDto.password),
-          id: id,
+          firstName: firstName ? firstName : user.firstName,
+          lastName: lastName ? lastName : user.lastName,
+          email: email ? email : user.email,
+          age: age ? age : user.age,
+          password: password ? Bcrypt.hashPassword(password) : user.password,
         },
       });
 
-      const { password, role, ...rest } = updateUser;
+      const { password: updatePass, role, ...rest } = updateUser;
 
       return { msg: `User Updated`, user: rest };
     } catch (error: any) {
