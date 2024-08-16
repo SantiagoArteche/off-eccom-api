@@ -10,11 +10,17 @@ export class CartRoutes {
     const cartController = new CartController(cartService);
 
     router.get("/", cartController.getCarts);
-
     router.get("/:id", cartController.getCartById);
-    router.post("/:productId/:cartId", cartController.addProductToCart);
+
     router.post("/:userId", cartController.createCart);
+    router.post("/:productId/:cartId", cartController.addProductToCart);
+
     router.delete("/:id", cartController.deleteCart);
+    router.delete("/:productId/:cartId", cartController.deleteCartItem);
+    router.delete(
+      "/removeitem/:productId/:cartId",
+      cartController.removeProductFromCart
+    );
 
     return router;
   }

@@ -3,7 +3,7 @@ import { CreateCartItemDTO } from "../../domain/dtos/cart/create-cart-item.dto";
 import { CustomError } from "../../domain/errors/custom-errors";
 import { PaginationDTO } from "../../domain/dtos/shared/pagination.dto";
 export class CartService {
-  async get({ page, limit }: PaginationDTO) {
+  async getCarts({ page, limit }: PaginationDTO) {
     try {
       const [allCarts, totalCarts] = await Promise.all([
         prisma.cart.findMany({
@@ -26,7 +26,7 @@ export class CartService {
     }
   }
 
-  async getById(id: string) {
+  async getCartById(id: string) {
     try {
       const cart = await prisma.cart.findUnique({
         where: {
@@ -42,7 +42,7 @@ export class CartService {
     }
   }
 
-  async add(
+  async addProductToCart(
     productId: string,
     cartId: string,
     createCartItemDto: CreateCartItemDTO
@@ -166,7 +166,7 @@ export class CartService {
     }
   }
 
-  async create(userId: string) {
+  async createCart(userId: string) {
     try {
       const user = await prisma.user.findUnique({
         where: {
@@ -194,7 +194,7 @@ export class CartService {
     }
   }
 
-  async delete(id: string) {
+  async deleteCart(id: string) {
     try {
       const cart = await prisma.cart.findUnique({
         where: {
@@ -220,6 +220,147 @@ export class CartService {
       });
 
       return `Cart with id ${cart.id} was deleted`;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteOneProduct(productId: string, cartId: string) {
+    try {
+      const [product, cart] = await Promise.all([
+        prisma.products.findFirst({
+          where: {
+            id: productId,
+          },
+        }),
+        prisma.cart.findUnique({
+          where: {
+            id: cartId,
+          },
+          include: {
+            CartItem: true,
+          },
+        }),
+      ]);
+
+      if (!cart || !product)
+        throw CustomError.badRequest("Product or Cart not found");
+      const itemCart = cart.CartItem.find(
+        (item) => item.productId === productId
+      );
+
+      if (!itemCart) throw CustomError.badRequest("Product in Cart not found");
+
+      const tax = cart.tax - product.price * 0.21;
+      const subTotal = cart.subtotal - product.price;
+      const total = cart.total - product.price - product.price * 0.21;
+
+      if (itemCart.quantity <= 1) {
+        await Promise.all([
+          prisma.cartItem.delete({
+            where: {
+              id: itemCart?.id,
+            },
+          }),
+          prisma.cart.update({
+            where: {
+              id: cartId,
+            },
+            data: {
+              cartItemId: cart.cartItemId.filter(
+                (prodId) => prodId !== itemCart.id
+              ),
+              tax,
+              total,
+              subtotal: subTotal,
+            },
+          }),
+        ]);
+      } else {
+        await Promise.all([
+          prisma.cartItem.update({
+            where: {
+              id: itemCart?.id,
+            },
+            data: {
+              quantity: {
+                decrement: 1,
+              },
+            },
+          }),
+          prisma.cart.update({
+            where: {
+              id: cartId,
+            },
+            data: {
+              tax,
+              total,
+              subtotal: subTotal,
+            },
+          }),
+        ]);
+      }
+
+      return `Quantity on product ${itemCart.id} from ${cartId} updated`;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async removeProduct(productId: string, cartId: string) {
+    try {
+      const [product, cart] = await Promise.all([
+        prisma.products.findFirst({
+          where: {
+            id: productId,
+          },
+        }),
+        prisma.cart.findUnique({
+          where: {
+            id: cartId,
+          },
+          include: {
+            CartItem: true,
+          },
+        }),
+      ]);
+
+      if (!cart || !product)
+        throw CustomError.badRequest("Cart or Product not found");
+
+      const itemCart = cart.CartItem.find(
+        (item) => item.productId === productId
+      );
+
+      itemCart?.quantity;
+
+      if (!itemCart) throw CustomError.badRequest("Product in Cart not found");
+
+      await Promise.all([
+        prisma.cartItem.delete({
+          where: {
+            id: itemCart?.id,
+          },
+        }),
+        prisma.cart.update({
+          where: {
+            id: cartId,
+          },
+          data: {
+            cartItemId: cart.cartItemId.filter(
+              (prodId) => prodId !== itemCart.id
+            ),
+            total:
+              cart.total -
+              product.price * itemCart.quantity -
+              product.price * itemCart.quantity * 0.21,
+            subtotal: cart.subtotal - product.price * itemCart.quantity,
+            tax: cart.tax - product.price * itemCart.quantity * 0.21,
+          },
+        }),
+      ]);
+
+      return `Product ${itemCart.id} from ${cartId} deleted`;
     } catch (error) {
       throw error;
     }

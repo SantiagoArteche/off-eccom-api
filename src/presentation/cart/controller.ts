@@ -14,7 +14,7 @@ export class CartController {
     if (error) throw CustomError.badRequest(error);
 
     this.cartService
-      .get(paginationDto!)
+      .getCarts(paginationDto!)
       .then((carts) => res.status(200).send(carts))
       .catch((error) => CustomError.handleErrors(error, res));
   };
@@ -23,7 +23,7 @@ export class CartController {
     const { id } = req.params;
 
     this.cartService
-      .getById(id)
+      .getCartById(id)
       .then((cart) => res.status(200).send(cart))
       .catch((error) => CustomError.handleErrors(error, res));
   };
@@ -35,7 +35,7 @@ export class CartController {
     if (error) return res.status(400).send(error);
 
     this.cartService
-      .add(productId, cartId, createCartItemDto!)
+      .addProductToCart(productId, cartId, createCartItemDto!)
       .then((cart) => res.status(201).send(cart))
       .catch((error) => CustomError.handleErrors(error, res));
   };
@@ -44,7 +44,7 @@ export class CartController {
     const { userId } = req.params;
 
     this.cartService
-      .create(userId)
+      .createCart(userId)
       .then((cart) => res.status(201).send(cart))
       .catch((error) => CustomError.handleErrors(error, res));
   };
@@ -53,8 +53,26 @@ export class CartController {
     const { id } = req.params;
 
     this.cartService
-      .delete(id)
+      .deleteCart(id)
       .then((deletedCart) => res.status(200).send(deletedCart))
+      .catch((error) => CustomError.handleErrors(error, res));
+  };
+
+  deleteCartItem = (req: Request, res: Response) => {
+    const { cartId, productId } = req.params;
+
+    this.cartService
+      .deleteOneProduct(productId, cartId)
+      .then((deletedItem) => res.status(200).send(deletedItem))
+      .catch((error) => CustomError.handleErrors(error, res));
+  };
+
+  removeProductFromCart = (req: Request, res: Response) => {
+    const { cartId, productId } = req.params;
+
+    this.cartService
+      .removeProduct(productId, cartId)
+      .then((removedItem) => res.status(200).send(removedItem))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 }
