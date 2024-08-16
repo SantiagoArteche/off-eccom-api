@@ -13,7 +13,9 @@ export class UserRoutes {
     router.get("/:id", userController.getUserById);
 
     router.post("/", userController.createUser);
+
     router.put("/:id", userController.updateUserById);
+
     router.delete("/:id", userController.deleteUserById);
 
     return router;

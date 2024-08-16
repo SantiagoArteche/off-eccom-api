@@ -1,4 +1,4 @@
-import { ProductsController } from "./controller";
+import { ProductController } from "./controller";
 import { ProductService } from "../services/product.service";
 import { Router } from "express";
 
@@ -7,15 +7,16 @@ export class ProductRoutes {
     const router = Router();
 
     const productService = new ProductService();
-    const productsController = new ProductsController(productService);
+    const productController = new ProductController(productService);
 
-    router.get("/", productsController.getProducts);
-    router.get("/:id", productsController.getProductById);
+    router.get("/", productController.getProducts);
+    router.get("/:id", productController.getProductById);
 
-    router.post("/", productsController.createProduct);
+    router.post("/", productController.createProduct);
 
-    router.put("/:id", productsController.updateProduct);
-    router.delete("/:id", productsController.deleteProduct);
+    router.put("/:id", productController.updateProduct);
+
+    router.delete("/:id", productController.deleteProduct);
 
     return router;
   }

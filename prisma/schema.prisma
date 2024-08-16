@@ -69,13 +69,15 @@ model CartItem {
 }
 
 model Order {
-  id        String    @id @default(uuid())
-  cartId    String
-  createdAt DateTime
-  isPaid    Boolean   @default(false)
-  paidAt    DateTime?
+  id           String    @id @default(uuid())
+  cartId       String?
+  createdAt    DateTime  @default(now())
+  discount     Int       @default(0)
+  finalPrice   Float
+  itemsInOrder Json[]
+  paidAt       DateTime?
 
-  cart Cart @relation(fields: [cartId], references: [id])
+  cart Cart? @relation(fields: [cartId], references: [id])
 }
 
 enum Role {

@@ -7,7 +7,7 @@ import {
   PaginationDTO,
 } from "../../domain/dtos";
 
-export class ProductsController {
+export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   getProducts = (req: Request, res: Response) => {

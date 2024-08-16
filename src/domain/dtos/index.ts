@@ -1,3 +1,4 @@
+export { CreateCartItemDTO } from "./cart/create-cart-item.dto";
 export { CreateCategoryDTO } from "./categories/create-category.dto";
 export { CreateProductDTO } from "./products/create-product.dto";
 export { CreateUserDTO } from "./users/create-user.dto";

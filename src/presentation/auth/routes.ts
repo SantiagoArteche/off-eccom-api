@@ -10,6 +10,7 @@ export class AuthRoutes {
     const authController = new AuthController(authService);
 
     router.post("/login", authController.loginUser);
+
     router.get("/validate", authController.validateUser);
 
     return router;

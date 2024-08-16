@@ -1,7 +1,8 @@
-import { prisma } from "../../data/postgres/init";
 import { CreateCartItemDTO } from "../../domain/dtos/cart/create-cart-item.dto";
 import { CustomError } from "../../domain/errors/custom-errors";
 import { PaginationDTO } from "../../domain/dtos/shared/pagination.dto";
+import { prisma } from "../../data/postgres/init";
+
 export class CartService {
   async getCarts({ page, limit }: PaginationDTO) {
     try {
@@ -61,8 +62,10 @@ export class CartService {
         }),
       ]);
 
+      
+
       if (!product || !cart)
-        throw CustomError.badRequest("Product or Cart not found");
+        throw CustomError.badRequest("Product or cart not found");
 
       const addProd = await prisma.$transaction(async (transaction) => {
         const prodInCart = await transaction.cart.findFirst({
@@ -244,7 +247,7 @@ export class CartService {
       ]);
 
       if (!cart || !product)
-        throw CustomError.badRequest("Product or Cart not found");
+        throw CustomError.badRequest("Product or cart not found");
       const itemCart = cart.CartItem.find(
         (item) => item.productId === productId
       );
@@ -326,7 +329,7 @@ export class CartService {
       ]);
 
       if (!cart || !product)
-        throw CustomError.badRequest("Cart or Product not found");
+        throw CustomError.badRequest("Product or cart not found");
 
       const itemCart = cart.CartItem.find(
         (item) => item.productId === productId

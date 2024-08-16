@@ -39,7 +39,8 @@ export class ProductService {
         },
       });
 
-      if (!product) throw CustomError.notFound("Product not found");
+      if (!product)
+        throw CustomError.notFound(`Product with id ${id} not found`);
 
       return { product };
     } catch (error) {
@@ -49,16 +50,12 @@ export class ProductService {
 
   async create(createProductDto: CreateProductDTO) {
     try {
-      console.log(createProductDto);
-
       const newProduct = await prisma.products.create({
         data: createProductDto,
       });
 
       return { product: newProduct };
     } catch (error: any) {
-      console.log(error);
-
       if (error.code === "P2002")
         throw CustomError.badRequest("Product with that name already exist");
 
@@ -80,7 +77,8 @@ export class ProductService {
         },
       });
 
-      if (!product) throw CustomError.notFound("Product not found");
+      if (!product)
+        throw CustomError.notFound(`Product with id ${id} not found`);
 
       const updateProduct = await prisma.products.update({
         where: {

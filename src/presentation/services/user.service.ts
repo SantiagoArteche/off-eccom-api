@@ -35,7 +35,7 @@ export class UserService {
         },
       });
 
-      if (!user) throw CustomError.notFound("User not found");
+      if (!user) throw CustomError.notFound(`User with id ${id} not found`);
 
       const { password, ...rest } = user;
 
@@ -75,7 +75,7 @@ export class UserService {
     try {
       const user = await prisma.user.findUnique({ where: { id } });
 
-      if (!user) throw CustomError.notFound("User not found");
+      if (!user) throw CustomError.notFound(`User with id ${id} not found`);
 
       const updateUser = await prisma.user.update({
         where: {
@@ -103,12 +103,50 @@ export class UserService {
 
   async delete(id: string) {
     try {
-      const user = await prisma.user.delete({ where: { id } });
+      const user = await prisma.user.findUnique({ where: { id } });
 
-      return `User with id ${user?.id} was deleted`;
+      if (!user) throw CustomError.notFound(`User with id ${id} not found`);
+
+      const userCart = await prisma.cart.findUnique({
+        where: {
+          userId: user.id,
+        },
+      });
+
+      if (userCart) {
+        prisma.$transaction(async (tx) => {
+          if (userCart?.cartItemId.length)
+            userCart.cartItemId.forEach(async (itemId) => {
+              await tx.cartItem.delete({
+                where: {
+                  id: itemId,
+                },
+              });
+            });
+
+          await Promise.all([
+            tx.cart.delete({
+              where: {
+                id: userCart.id,
+              },
+            }),
+            tx.user.delete({
+              where: {
+                id,
+              },
+            }),
+          ]);
+        });
+      } else {
+        await prisma.user.delete({
+          where: {
+            id,
+          },
+        });
+      }
+
+      return `User with id ${user.id} was deleted`;
     } catch (error: any) {
-      if (error.code === "P2025") throw CustomError.notFound("User not found");
-
       throw error;
     }
   }

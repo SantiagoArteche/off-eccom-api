@@ -1,8 +1,7 @@
-import { Request, Response } from "express";
 import { CartService } from "../services/cart.service";
+import { CreateCartItemDTO, PaginationDTO } from "../../domain/dtos";
 import { CustomError } from "../../domain/errors/custom-errors";
-import { CreateCartItemDTO } from "../../domain/dtos/cart/create-cart-item.dto";
-import { PaginationDTO } from "../../domain/dtos";
+import { Request, Response } from "express";
 
 export class CartController {
   constructor(private readonly cartService: CartService) {}

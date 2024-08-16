@@ -1,6 +1,6 @@
-import { Router } from "express";
 import { CartController } from "./controller";
 import { CartService } from "../services/cart.service";
+import { Router } from "express";
 
 export class CartRoutes {
   static get routes() {
@@ -13,7 +13,8 @@ export class CartRoutes {
     router.get("/:id", cartController.getCartById);
 
     router.post("/:userId", cartController.createCart);
-    router.post("/:productId/:cartId", cartController.addProductToCart);
+
+    router.put("/:productId/:cartId", cartController.addProductToCart);
 
     router.delete("/:id", cartController.deleteCart);
     router.delete("/:productId/:cartId", cartController.deleteCartItem);

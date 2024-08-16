@@ -39,7 +39,8 @@ export class CategoryService {
         },
       });
 
-      if (!category) throw CustomError.notFound("Category not found");
+      if (!category)
+        throw CustomError.notFound(`Category with id ${id} not found`);
 
       return { category };
     } catch (error) {
@@ -86,7 +87,8 @@ export class CategoryService {
         },
       });
 
-      if (!category) throw CustomError.notFound("Category not found");
+      if (!category)
+        throw CustomError.notFound(`Category with id ${id} not found`);
 
       const updateCategory = await prisma.category.update({
         where: {
@@ -108,4 +110,7 @@ export class CategoryService {
       throw error;
     }
   }
+
+
+
 }
