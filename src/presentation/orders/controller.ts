@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { PaginationDTO } from "../../domain/dtos";
 import { OrderService } from "../services/order.service";
 import { CustomError } from "../../domain/errors/custom-errors";
-import { send } from "vite";
 
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
@@ -32,11 +31,11 @@ export class OrderController {
     const { cartId } = req.params;
     const { discount } = req.body;
 
-    if (isNaN(+discount))
+    if (discount && isNaN(+discount))
       return res.status(400).send("Discount must be a number");
 
     this.orderService
-      .create(cartId, +discount)
+      .create(cartId, discount)
       .then((order) => res.status(201).send(order))
       .catch((error) => CustomError.handleErrors(error, res));
   };

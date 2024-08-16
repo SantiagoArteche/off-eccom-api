@@ -62,8 +62,6 @@ export class CartService {
         }),
       ]);
 
-      
-
       if (!product || !cart)
         throw CustomError.badRequest("Product or cart not found");
 

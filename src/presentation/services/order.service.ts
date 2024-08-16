@@ -42,7 +42,7 @@ export class OrderService {
     }
   }
 
-  async create(cartId: string, discount: number) {
+  async create(cartId: string, discount: number = 0) {
     try {
       let setDiscount = discount;
       if (discount < 10 || discount > 99) {
@@ -62,7 +62,8 @@ export class OrderService {
           },
         });
 
-        if (exist) throw CustomError.badRequest("You only can make one order");
+        if (exist)
+          throw CustomError.badRequest("You only can make one order at time");
 
         const cart = await tx.cart.update({
           where: {
@@ -93,7 +94,7 @@ export class OrderService {
         const order = tx.order.create({
           data: {
             cartId: cart.id,
-            discount: setDiscount < 0 || setDiscount > 99 ? 0 : setDiscount,
+            discount: setDiscount < 0 || setDiscount > 99 ? 0 : +setDiscount,
             finalPrice: cart.total - cart.total * Number(discount),
             itemsInOrder: cart.CartItem.map((item) => {
               return {
@@ -159,12 +160,23 @@ export class OrderService {
           },
         });
 
+        const userValidated = await tx.user.findUnique({
+          where: {
+            id: order.cart?.userId,
+          },
+        });
+
+        if (!userValidated?.isValidated)
+          throw CustomError.forbidden(
+            `Before making an order, you need to validate your account!`
+          );
+
         return tx.order.update({
           where: {
             id: order.id,
           },
           data: {
-            paidAt: new Date(),
+            paidBy: order.cart?.userId,
           },
         });
       });

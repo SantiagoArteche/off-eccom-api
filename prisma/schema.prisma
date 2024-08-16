@@ -69,13 +69,13 @@ model CartItem {
 }
 
 model Order {
-  id           String    @id @default(uuid())
+  id           String   @id @default(uuid())
   cartId       String?
-  createdAt    DateTime  @default(now())
-  discount     Int       @default(0)
+  createdAt    DateTime @default(now())
+  discount     Int      @default(0)
   finalPrice   Float
   itemsInOrder Json[]
-  paidAt       DateTime?
+  paidBy       String?
 
   cart Cart? @relation(fields: [cartId], references: [id])
 }
