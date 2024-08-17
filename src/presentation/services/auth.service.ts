@@ -11,10 +11,10 @@ export class AuthService {
         },
       });
 
-      if (!user) throw CustomError.notFound("User not found");
+      if (!user) throw CustomError.notFound("Wrong credentials");
 
       if (!Bcrypt.comparePasswords(password, user.password))
-        throw CustomError.badRequest("Password incorrect");
+        throw CustomError.badRequest("Wrong credentials");
 
       const { password: pass, role, ...rest } = user;
 
