@@ -11,7 +11,8 @@ export class AuthRoutes {
 
     router.post("/login", authController.loginUser);
 
-    router.get("/validate", authController.validateUser);
+    router.get("/validate/:token", authController.validateUser);
+    router.get("/login", authController.validateLogin);
 
     return router;
   }

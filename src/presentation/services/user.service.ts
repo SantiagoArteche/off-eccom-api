@@ -1,5 +1,8 @@
+import "dotenv/config";
 import { Bcrypt } from "../../config/bcrypt";
 import { CustomError } from "../../domain/errors/custom-errors";
+import { Jwt } from "../../config";
+import { Nodemailer } from "../../config/nodemailer";
 import { PaginationDTO, CreateUserDTO, UpdateUserDTO } from "../../domain/dtos";
 import { prisma } from "../../data/postgres/init";
 
@@ -53,6 +56,8 @@ export class UserService {
           password: Bcrypt.hashPassword(createUserDto.password),
         },
       });
+
+      this.sendValidationMail({ email: newUser.email, id: newUser.id });
 
       const { password, ...rest } = newUser;
 
@@ -149,5 +154,32 @@ export class UserService {
     } catch (error: any) {
       throw error;
     }
+  }
+
+  private async sendValidationMail(userData: { email: string; id: string }) {
+    const { email, id } = userData;
+
+    const token = await Jwt.createToken({ email: email, id: id }, "3h");
+
+    if (!token) throw CustomError.internalServer("Error getting token");
+
+    const link = `${process.env.WEB_URL}/auth/validate/${token}`;
+
+    const nodemailer = new Nodemailer(
+      process.env.SERVICE!,
+      process.env.SENDER_EMAIL!,
+      process.env.SENDER_PASS!
+    );
+
+    const isSent = await nodemailer.sendEmail({
+      subject: "Validate your email",
+      to: email,
+      htmlBody: `<h1>Click the next link to validate your email<h1>
+      <a href="${link}">Validate your email: ${email}</a> `,
+    });
+
+    if (!isSent) throw CustomError.internalServer("Error sending email");
+
+    return true;
   }
 }

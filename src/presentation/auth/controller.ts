@@ -24,12 +24,23 @@ export class AuthController {
   };
 
   validateUser = (req: Request, res: Response) => {
+    const { token } = req.params;
+
+    if (!token) return res.status(404).send("Token not found");
+
+    this.authService
+      .validate(token)
+      .then((userValidated) => res.status(200).send(userValidated))
+      .catch((error) => CustomError.handleErrors(error, res));
+  };
+
+  validateLogin = (req: Request, res: Response) => {
     const { cookie } = req.headers;
 
     if (!cookie) return res.status(404).send("Cookie not found");
 
     this.authService
-      .validate(cookie)
+      .validateLogin(cookie)
       .then((userValidated) => res.status(200).send(userValidated))
       .catch((error) => CustomError.handleErrors(error, res));
   };
