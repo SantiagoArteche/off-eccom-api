@@ -13,6 +13,7 @@ export class UserRoutes {
     router.get("/:id", userController.getUserById);
 
     router.post("/", userController.createUser);
+    router.post("/:id", userController.reSendValidation);
 
     router.put("/:id", userController.updateUserById);
 

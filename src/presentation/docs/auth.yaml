@@ -1,0 +1,94 @@
+paths:
+  /api/auth/login:
+    get:
+      summary: Validate user by cookie
+      tags:
+        - Auth
+      responses:
+        "200":
+          description: Verify login
+          content:
+            application/json:
+              schema:
+                type: string
+                default: User with email san@hotmail.com logged
+        "400":
+          description: Bad request
+        "404":
+          description: Cookie not found
+        "500":
+          description: Internal server error
+    post:
+      summary: Login with credentials
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Make login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+                      email:
+                        type: string
+                      age:
+                        type: number
+                      isValidated:
+                        type: boolean
+                  token:
+                    type: string
+        "400":
+          description: Bad request
+        "404":
+          description: Wrong credentials
+        "500":
+          description: Internal server error
+
+  /api/auth/validate/{token}:
+    get:
+      tags:
+        - Auth
+      summary: Validate email
+      parameters:
+        - in: path
+          name: token
+          schema:
+            type: string
+          required: true
+          description: Token generated when user was created
+      responses:
+        "200":
+          description: User validated
+          content:
+            application/json:
+              schema:
+                type: string
+                default: User with email san@hotmail.com validated
+        "400":
+          description: Bad request
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error

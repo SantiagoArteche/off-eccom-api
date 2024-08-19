@@ -27,7 +27,8 @@ export class CustomError extends Error {
   static handleErrors(error: unknown, res: Response) {
     if (error instanceof CustomError) {
       return res.status(error.statusCode).send(error.message);
+    } else {
+      return res.status(500).send(`Internal server error`);
     }
-    return res.status(500).send(`Internal server error`);
   }
 }

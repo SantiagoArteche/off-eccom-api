@@ -95,6 +95,7 @@ export class AuthService {
 
       return `User with email ${updateUser.email} validated`;
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }

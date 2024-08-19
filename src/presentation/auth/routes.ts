@@ -9,10 +9,10 @@ export class AuthRoutes {
     const authService = new AuthService();
     const authController = new AuthController(authService);
 
-    router.post("/login", authController.loginUser);
-
-    router.get("/validate/:token", authController.validateUser);
     router.get("/login", authController.validateLogin);
+    router.get("/validate/:token", authController.validateUser);
+
+    router.post("/login", authController.loginUser);
 
     return router;
   }

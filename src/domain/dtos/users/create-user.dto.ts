@@ -10,7 +10,8 @@ export class CreateUserDTO {
   static create(props: { [key: string]: any }): [string?, CreateUserDTO?] {
     const { email, firstName, lastName, password, age } = props;
 
-    if (isNaN(age)) return ["Age should be a number"];
+    if (!age) return ["Age is required"];
+    if (isNaN(age)) return ["Age must be a number"];
 
     if (!email) return ["Email is required"];
     if (typeof email !== "string") return ["Email must be a string"];

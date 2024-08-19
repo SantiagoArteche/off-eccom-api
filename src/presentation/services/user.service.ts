@@ -13,6 +13,14 @@ export class UserService {
         prisma.user.findMany({
           take: limit,
           skip: (page - 1) * limit,
+          select: {
+            id: true,
+            age: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            isValidated: true,
+          },
         }),
         prisma.user.count(),
       ]);
@@ -181,5 +189,25 @@ export class UserService {
     if (!isSent) throw CustomError.internalServer("Error sending email");
 
     return true;
+  }
+
+  async reSendValidationMail(id: string) {
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!user) throw CustomError.notFound(`User with id ${id} not found`);
+      if (user.isValidated)
+        throw CustomError.badRequest("User already validated");
+
+      this.sendValidationMail({ email: user.email, id: user.id });
+
+      return `Email resend to ${user.email}`;
+    } catch (error) {
+      throw error;
+    }
   }
 }

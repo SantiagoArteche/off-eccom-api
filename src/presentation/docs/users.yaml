@@ -1,0 +1,271 @@
+paths:
+  /api/users/:
+    get:
+      summary: Get all users
+      tags:
+        - Users
+      responses:
+        "200":
+          description: Get all users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currentPage:
+                    type: number
+                    description: Actual page
+                    default: 1
+                  limit:
+                    type: number
+                    description: Limit of documents
+                    default: 10
+                  prev:
+                    type: string
+                    description: Previous page
+                    default: null
+                  next:
+                    type: string
+                    description: Next Page
+                    default: "/api/users?page=2&limit=10"
+                  totalUsers:
+                    type: number
+                    description: Count of users
+                    default: 1
+                  users:
+                    type: array
+                    description: Users
+                    items:
+                      $ref: "#/components/schemas/Users"
+        "400":
+          description: Bad request
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+    post:
+      tags:
+        - Users
+      summary: Create an user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                age:
+                  type: number
+                password:
+                  type: string
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    default: "User Created"
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+                      age:
+                        type: number
+                      password:
+                        type: string
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+
+  /api/users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user
+      responses:
+        "200":
+          description: User found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+                      age:
+                        type: number
+                      password:
+                        type: string
+        "404":
+          description: "User not found"
+        "500":
+          description: "Internal server error"
+    post:
+      tags:
+        - Users
+      summary: Resend email to an user not validated
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user
+      responses:
+        "200":
+          description: Email resend
+          content:
+            application/json:
+              type: string
+              default: Email resend to santeharteche@hotmail.com
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+    put:
+      tags:
+        - Users
+      summary: Update user by ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                age:
+                  type: number
+                password:
+                  type: string
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the user
+      responses:
+        "201":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    default: "User updated"
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+                      age:
+                        type: number
+                      password:
+                        type: string
+        "400":
+          description: Bad request
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+    delete:
+      summary: Delete user by ID
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the user
+      responses:
+        "200":
+          description: Delete user by ID
+          content:
+            application/json:
+              schema:
+                type: string
+                default: User with id e733ee66-958e-4369-aca3-a62f8164444d was deleted
+        "400":
+          description: Bad request
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+
+components:
+  schemas:
+    Users:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User ID
+          format: uuid
+        age:
+          type: number
+          description: User age
+        firstName:
+          type: string
+          description: User first name
+        lastName:
+          type: string
+          description: User last name
+        email:
+          type: string
+          description: User email
+        isValidated:
+          type: boolean
+          description: User validation
+          default: false
+      example:
+        {
+          "id": "e733ee66-958e-4369-aca3-a62f8164444d",
+          "age": 33,
+          "firstName": "Santiago",
+          "lastName": "Arteche",
+          "email": "artechesan@hotmail.com",
+          "isValidated": false,
+        }

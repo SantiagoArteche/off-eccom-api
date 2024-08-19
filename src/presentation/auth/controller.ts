@@ -8,6 +8,9 @@ export class AuthController {
   loginUser = (req: Request, res: Response) => {
     const { email, password } = req.body;
 
+    if (!email || !password)
+      return res.status(400).send("Email and password are required");
+
     this.authService
       .login(email, password.toString())
       .then((user) =>

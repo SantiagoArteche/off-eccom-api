@@ -57,4 +57,13 @@ export class UserController {
       .then((user) => res.status(200).send(user))
       .catch((error) => CustomError.handleErrors(error, res));
   };
+
+  reSendValidation = (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    this.userService
+      .reSendValidationMail(id)
+      .then((userValidated) => res.status(200).send(userValidated))
+      .catch((error) => CustomError.handleErrors(error, res));
+  };
 }
