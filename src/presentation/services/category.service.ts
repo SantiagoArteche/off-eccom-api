@@ -70,8 +70,12 @@ export class CategoryService {
         },
       });
 
-      return `Category with id ${category.id} deleted`;
+      return `Category with id ${category.id} was deleted`;
     } catch (error: any) {
+      if (error.code === "P2003")
+        throw CustomError.badRequest(
+          "This category have a relation with one o more products"
+        );
       if (error.code === "P2025")
         throw CustomError.notFound("Category not found");
 
@@ -110,7 +114,4 @@ export class CategoryService {
       throw error;
     }
   }
-
-
-
 }

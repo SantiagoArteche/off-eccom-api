@@ -181,7 +181,7 @@ export class OrderService {
         });
       });
 
-      return { msg: `Order with id ${order.id} paid!`, paidOrder };
+      return { msg: `Order with id ${order.id} was paid!`, paidOrder };
     } catch (error) {
       throw error;
     }

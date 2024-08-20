@@ -1,5 +1,5 @@
 paths:
-  /api/users/:
+  /api/users:
     get:
       summary: Get all users
       tags:
@@ -39,8 +39,6 @@ paths:
                       $ref: "#/components/schemas/Users"
         "400":
           description: Bad request
-        "404":
-          description: User not found
         "500":
           description: Internal server error
     post:

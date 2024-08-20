@@ -1,0 +1,190 @@
+paths:
+  /api/categories:
+    get:
+      summary: Get all categories
+      tags:
+        - Categories
+      responses:
+        "200":
+          description: All categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currentPage:
+                    type: number
+                    default: 1
+                  limit:
+                    type: number
+                    default: 10
+                  prev:
+                    type: string
+                    default: null
+                  next:
+                    type: string
+                    default: /api/categories?page=2&limit=10
+                  totalCategories:
+                    type: number
+                    default: 1
+                  categories:
+                    type: array
+                    description: Categories
+                    items:
+                      $ref: "#/components/schemas/Categories"
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    post:
+      summary: Create a category
+      tags:
+        - Categories
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  default: New category
+                createdAt:
+                  type: string
+                  format: date
+                  optional: true
+      responses:
+        "201":
+          description: Category created
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Categories"
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+
+  /api/categories/{id}:
+    get:
+      summary: Get category by ID
+      tags:
+        - Categories
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of category
+      responses:
+        "200":
+          description: All categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                        default: Shoes
+                      createdAt:
+                        type: string
+                        default: date
+                      updatedAt:
+                        type: string
+                        default: date
+    put:
+      summary: Update category by ID
+      tags:
+        - Categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  default: Updated category
+                createdAt:
+                  type: string
+                  format: date
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of category
+      responses:
+        "201":
+          description: Category updated
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Categories"
+        "400":
+          description: Bad request
+        "404":
+          description: Category not found
+        "500":
+          description: Internal server error
+    delete:
+      summary: Delete category by ID
+      tags:
+        - Categories
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of category
+      responses:
+        "200":
+          description: Category deleted
+          content:
+            application/json:
+              schema:
+                type: string
+                default: Category with id 176b11e2-dfc0-480c-ad9b-1e3da47fed05 was deleted
+        "400":
+          description: Bad request
+        "404":
+          description: Category not found
+        "500":
+          description: Internal server error
+
+components:
+  schemas:
+    Categories:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+      example:
+        {
+          "id": "073dc57f-1f8c-42e4-b5ca-0fc670e39266",
+          "name": "Shoes",
+          "createdAt": "2024-08-16T14:53:59.791Z",
+          "updatedAt": "2024-08-16T14:53:59.792Z",
+        }

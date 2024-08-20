@@ -1,0 +1,214 @@
+paths:
+  /api/products:
+    get:
+      summary: Get all products
+      tags:
+        - Products
+      responses:
+        "200":
+          description: All products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currentPage:
+                    type: number
+                    default: 1
+                  limit:
+                    type: number
+                    default: 10
+                  prev:
+                    type: string
+                    default: null
+                  next:
+                    type: string
+                    default: /api/products?page=2&limit=10
+                  totalProducts:
+                    type: number
+                    default: 1
+                  products:
+                    type: array
+                    description: Products
+                    items:
+                      $ref: "#/components/schemas/Products"
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+    post:
+      summary: Create a product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  default: New Product
+                category:
+                  type: string
+                  default: Sweaters
+                price:
+                  type: number
+                  default: 1500
+                stock:
+                  type: integer
+                  default: 10
+                createdAt:
+                  type: string
+                  format: date
+      responses:
+        "201":
+          description: Product created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    $ref: "#/components/schemas/Products"
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+
+  /api/products/{id}:
+    get:
+      summary: Get product by ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of product
+      responses:
+        "200":
+          description: Product obtained by ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    $ref: "#/components/schemas/Products"
+        "400":
+          description: Bad request
+        "404":
+          description: Product not found
+        "500":
+          description: Internal server error
+    put:
+      summary: Update product by ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  default: Updated Product
+                price:
+                  type: number
+                  default: 1600
+                stock:
+                  type: integer
+                  default: 20
+                category:
+                  type: string
+                  default: Shoes
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    $ref: "#/components/schemas/Products"
+        "400":
+          description: Bad request
+        "404":
+          description: Product not found
+        "500":
+          description: Internal server error
+    delete:
+      summary: Delete product by ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the product
+      responses:
+        "200":
+          description: Delete product by ID
+          content:
+            application/json:
+              schema:
+                type: string
+                default: Product with id 176b11e2-dfc0-480c-ad9b-1e3da47fed05 was deleted
+        "400":
+          description: Bad request
+        "404":
+          description: Product not found
+        "500":
+          description: Internal server error
+components:
+  schemas:
+    Products:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+        stock:
+          type: integer
+        lowStock:
+          type: boolean
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+      example:
+        {
+          "id": "176b11e2-dfc0-480c-ad9b-1e3da47fed05",
+          "name": "Nike",
+          "category": "Shoes",
+          "price": 1221,
+          "stock": 89,
+          "lowStock": false,
+          "createdAt": "2024-08-16T14:56:07.121Z",
+          "updatedAt": "2024-08-16T20:25:10.401Z",
+        }

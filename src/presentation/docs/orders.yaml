@@ -1,0 +1,249 @@
+paths:
+  /api/orders:
+    get:
+      summary: Get all orders
+      tags:
+        - Orders
+      responses:
+        "200":
+          description: All orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currentPage:
+                    type: number
+                    default: 1
+                  limit:
+                    type: number
+                    default: 10
+                  prev:
+                    type: string
+                    default: null
+                  next:
+                    type: string
+                    default: /api/orders?page=2&limit=10
+                  totalOrders:
+                    type: number
+                    default: 1
+                  orders:
+                    type: array
+                    description: Categories
+                    items:
+                      $ref: "#/components/schemas/Orders"
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+
+  /api/orders/{id}:
+    get:
+      summary: Get order by ID
+      tags:
+        - Orders
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Order by ID obtained
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order:
+                    type: object
+                    $ref: "#/components/schemas/Orders"
+        "400":
+          description: Bad request
+        "404":
+          description: Order not found
+        "500":
+          description: Internal server error
+    delete:
+      summary: Delete order by ID
+      tags:
+        - Orders
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Order deleted
+          content:
+            application/json:
+              schema:
+                type: string
+                default: Order with id 17dab1fb-4c18-4e69-ad8c-869ea60ded5b was deleted
+        "400":
+          description: Bad request
+        "404":
+          description: Order not found
+        "500":
+          description: Internal server error
+
+  /api/orders/{cartId}:
+    post:
+      summary: Create an order
+      tags:
+        - Orders
+      parameters:
+        - in: path
+          name: cartId
+          schema:
+            type: string
+          required: true
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order:
+                    type: object
+                    $ref: "#/components/schemas/Orders"
+        "400":
+          description: Bad request
+        "404":
+          description: Cart not found
+        "500":
+          description: Internal server error
+
+  /api/orders/{orderId}/{cartId}:
+    put:
+      summary: Update order
+      tags:
+        - Orders
+      parameters:
+        - in: path
+          name: orderId
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: cartId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                discount:
+                  type: integer
+                  default: 0
+      responses:
+        "201":
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updatedOrder:
+                    type: object
+                    $ref: "#/components/schemas/Orders"
+        "400":
+          description: Bad request
+        "404":
+          description: Order or cart not found
+        "500":
+          description: Internal server error
+
+  /api/orders/pay/{id}:
+    post:
+      summary: Pay order
+      tags:
+        - Orders
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Order paid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    default: Order with id 77f39987-11a1-4551-b603-160f3b8c0579 was paid!
+                  paidOrder:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      cartId:
+                        type: string
+                        default: null
+                      createdAt:
+                        type: string
+                        format: date
+                      discount:
+                        type: integer
+                        default: 0
+                      finalPrice:
+                        type: number
+                        default: 70000
+                      itemsInOrder:
+                        type: array
+                        default: [{ "name": "New Product", "quantity": 4 }]
+                      paidBy:
+                        type: string
+                        format: uuid
+        "400":
+          description: Bad request
+        "404":
+          description: Order not found
+        "500":
+          description: Internal server error
+components:
+  schemas:
+    Orders:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        cartId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date
+        discount:
+          type: integer
+        finalPrice:
+          type: number
+        itemsInOrder:
+          type: array
+        paidBy:
+          type: string
+          format: uuid
+      example:
+        {
+          "id": "17dab1fb-4c18-4e69-ad8c-869ea60ded5b",
+          "cartId": "17dab1fb-4c18-4e69-ad8c-869ea60ded5b",
+          "createdAt": "2024-08-16T20:26:02.105Z",
+          "discount": 22,
+          "finalPrice": 8775.8154,
+          "itemsInOrder": [{ "name": "Nike", "quantity": 6 }],
+          "paidBy": null,
+        }
