@@ -304,7 +304,7 @@ export class CartService {
         ]);
       }
 
-      return `Quantity on product ${itemCart.id} from ${cartId} updated`;
+      return `Quantity on product ${itemCart.id} from cart ${cartId} was updated`;
     } catch (error) {
       throw error;
     }

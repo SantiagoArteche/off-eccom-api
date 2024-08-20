@@ -218,7 +218,7 @@ paths:
             application/json:
               schema:
                 type: string
-                default: Quantity on product cd338618-b00e-4847-a5c1-67b5882b2dfd from a6c02b5a-c8df-4405-b607-75a4aa9c557e updated
+                default: Quantity on product cd338618-b00e-4847-a5c1-67b5882b2dfd from cart a6c02b5a-c8df-4405-b607-75a4aa9c557e was updated
         "400":
           description: Bad request
         "404":
