@@ -63,7 +63,7 @@ export class CartService {
       ]);
 
       if (!product || !cart)
-        throw CustomError.badRequest("Product or cart not found");
+        throw CustomError.notFound("Product or cart not found");
 
       const addProd = await prisma.$transaction(async (transaction) => {
         const prodInCart = await transaction.cart.findFirst({
@@ -132,8 +132,8 @@ export class CartService {
             },
             data: {
               subtotal: subTotal,
-              tax,
-              total: tax + subTotal,
+              tax: +tax.toFixed(2),
+              total: +(tax + subTotal).toFixed(2),
               cartItemId: cart.cartItemId,
             },
           });
@@ -176,7 +176,7 @@ export class CartService {
       });
 
       if (!user)
-        throw CustomError.badRequest(
+        throw CustomError.notFound(
           `User with id ${userId} not found, to create a cart you need an user`
         );
 
@@ -245,18 +245,20 @@ export class CartService {
       ]);
 
       if (!cart || !product)
-        throw CustomError.badRequest("Product or cart not found");
+        throw CustomError.notFound("Product or cart not found");
+
       const itemCart = cart.CartItem.find(
         (item) => item.productId === productId
       );
 
-      if (!itemCart) throw CustomError.badRequest("Product in Cart not found");
+      if (!itemCart) throw CustomError.notFound("Product in Cart not found");
 
       const tax = cart.tax - product.price * 0.21;
       const subTotal = cart.subtotal - product.price;
       const total = cart.total - product.price - product.price * 0.21;
 
       if (itemCart.quantity <= 1) {
+        console.log(tax < 0);
         await Promise.all([
           prisma.cartItem.delete({
             where: {
@@ -271,9 +273,9 @@ export class CartService {
               cartItemId: cart.cartItemId.filter(
                 (prodId) => prodId !== itemCart.id
               ),
-              tax,
-              total,
-              subtotal: subTotal,
+              tax: tax.toString().includes("-") ? 0 : +tax.toFixed(2),
+              total: total.toString().includes("-") ? 0 : +total.toFixed(2),
+              subtotal: subTotal.toString().includes("-") ? 0 : subTotal,
             },
           }),
         ]);
@@ -294,8 +296,8 @@ export class CartService {
               id: cartId,
             },
             data: {
-              tax,
-              total,
+              tax: +tax.toFixed(2),
+              total: +total.toFixed(2),
               subtotal: subTotal,
             },
           }),
@@ -327,15 +329,20 @@ export class CartService {
       ]);
 
       if (!cart || !product)
-        throw CustomError.badRequest("Product or cart not found");
+        throw CustomError.notFound("Product or cart not found");
 
       const itemCart = cart.CartItem.find(
         (item) => item.productId === productId
       );
 
-      itemCart?.quantity;
+      if (!itemCart) throw CustomError.notFound("Product in Cart not found");
 
-      if (!itemCart) throw CustomError.badRequest("Product in Cart not found");
+      const total =
+        cart.total -
+        product.price * itemCart.quantity -
+        product.price * itemCart.quantity * 0.21;
+      const subTotal = cart.subtotal - product.price * itemCart.quantity;
+      const tax = cart.tax - product.price * itemCart.quantity * 0.21;
 
       await Promise.all([
         prisma.cartItem.delete({
@@ -351,17 +358,14 @@ export class CartService {
             cartItemId: cart.cartItemId.filter(
               (prodId) => prodId !== itemCart.id
             ),
-            total:
-              cart.total -
-              product.price * itemCart.quantity -
-              product.price * itemCart.quantity * 0.21,
-            subtotal: cart.subtotal - product.price * itemCart.quantity,
-            tax: cart.tax - product.price * itemCart.quantity * 0.21,
+            total: total.toString().includes("-") ? 0 : +total.toFixed(2),
+            subtotal: subTotal.toString().includes("-") ? 0 : subTotal,
+            tax: tax.toString().includes("-") ? 0 : +tax.toFixed(2),
           },
         }),
       ]);
 
-      return `Product ${itemCart.id} from ${cartId} deleted`;
+      return `Product ${itemCart.id} from cart ${cartId} was deleted`;
     } catch (error) {
       throw error;
     }

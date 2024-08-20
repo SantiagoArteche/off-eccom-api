@@ -1,0 +1,294 @@
+paths:
+  /api/cart:
+    get:
+      summary: Get all carts
+      tags:
+        - Cart
+      responses:
+        "200":
+          description: All carts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currentPage:
+                    type: number
+                    default: 1
+                  limit:
+                    type: number
+                    default: 10
+                  prev:
+                    type: string
+                    default: null
+                  next:
+                    type: string
+                    default: /api/cart?page=2&limit=10
+                  totalCarts:
+                    type: number
+                    default: 1
+                  allCarts:
+                    type: array
+                    description: Carts
+                    items:
+                      $ref: "#/components/schemas/Cart"
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+
+  /api/cart/{id}:
+    get:
+      summary: Get cart by ID
+      tags:
+        - Cart
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the cart
+      responses:
+        "200":
+          description: Cart by ID obtained
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cart:
+                    type: object
+                    $ref: "#/components/schemas/Cart"
+        "400":
+          description: Bad request
+        "404":
+          description: Cart not found
+        "500":
+          description: Internal server error
+    delete:
+      summary: Delete cart by ID
+      tags:
+        - Cart
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the cart
+      responses:
+        "200":
+          description: Cart deleted
+          content:
+            application/json:
+              schema:
+                type: string
+                default: Cart with id 10de0f76-68f0-4f23-b5c0-9a04eaabd432 was deleted
+        "400":
+          description: Bad request
+        "404":
+          description: Cart not found
+        "500":
+          description: Internal server error
+
+  /api/cart/{userId}:
+    post:
+      summary: Create cart for an user
+      tags:
+        - Cart
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: ID of the user
+      responses:
+        "201":
+          description: Cart created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    default: "Cart created!"
+                  cart:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      userId:
+                        type: string
+                        format: uuid
+                      placeOrder:
+                        type: boolean
+                        default: false
+                      total:
+                        type: number
+                        default: 0
+                      subtotal:
+                        type: number
+                        default: 0
+                      tax:
+                        type: number
+                        default: 0
+                      cartItemId:
+                        type: array
+                        default: []
+        "400":
+          description: Bad request
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+
+  /api/cart/{productId}/{cartId}:
+    put:
+      summary: Add product to cart
+      tags:
+        - Cart
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+          required: true
+          description: ID of the product
+        - in: path
+          name: cartId
+          schema:
+            type: string
+          required: true
+          description: ID of the cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  default: 1
+      responses:
+        "201":
+          description: Product added to cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    default: Cart Updated
+                  updatedCart:
+                    type: object
+                    $ref: "#/components/schemas/Cart"
+        "400":
+          description: Bad request
+        "404":
+          description: Product or cart not found
+        "500":
+          description: Internal server error
+    delete:
+      summary: Remove one item from cart
+      tags:
+        - Cart
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+          required: true
+          description: ID of the product
+        - in: path
+          name: cartId
+          schema:
+            type: string
+          required: true
+          description: ID of the cart
+      responses:
+        "200":
+          description: Item removed
+          content:
+            application/json:
+              schema:
+                type: string
+                default: Quantity on product cd338618-b00e-4847-a5c1-67b5882b2dfd from a6c02b5a-c8df-4405-b607-75a4aa9c557e updated
+        "400":
+          description: Bad request
+        "404":
+          description: Product or cart not found
+        "500":
+          description: Internal server error
+
+  /api/cart/removeproduct/{productId}/{cartId}:
+    delete:
+      summary: Remove product from cart
+      tags:
+        - Cart
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+          required: true
+          description: ID of product
+        - in: path
+          name: cartId
+          schema:
+            type: string
+          required: true
+          description: ID of cart
+      responses:
+        "200":
+          description: Product removed
+          content:
+            application/json:
+              schema:
+                type: string
+                default: Product 2cea34fb-e93b-4b03-bd4f-adc440894d55 from cart a6c02b5a-c8df-4405-b607-75a4aa9c557e was deleted
+        "400":
+          description: Bad request
+        "404":
+          description: Product or cart not found
+        "500":
+          description: Internal server error
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        placeOrder:
+          type: boolean
+        total:
+          type: number
+        subtotal:
+          type: number
+        tax:
+          type: number
+        cartItemId:
+          type: array
+          items:
+            type: string
+
+      example:
+        {
+          "id": "10de0f76-68f0-4f23-b5c0-9a04eaabd432",
+          "userId": "5d03bb3c-7823-4bf7-a528-7133d08a2923",
+          "placeOrder": false,
+          "total": 7447.55,
+          "subtotal": 6155,
+          "tax": 1292.55,
+          "cartItemId": ["c82f9e54-369f-4949-ac13-0c749b1969b7"],
+        }

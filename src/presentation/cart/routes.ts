@@ -19,7 +19,7 @@ export class CartRoutes {
     router.delete("/:id", cartController.deleteCart);
     router.delete("/:productId/:cartId", cartController.deleteCartItem);
     router.delete(
-      "/removeitem/:productId/:cartId",
+      "/removeproduct/:productId/:cartId",
       cartController.removeProductFromCart
     );
 

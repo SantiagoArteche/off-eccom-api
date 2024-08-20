@@ -234,6 +234,13 @@ components:
           type: number
         itemsInOrder:
           type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              quantity:
+                type: integer
         paidBy:
           type: string
           format: uuid
