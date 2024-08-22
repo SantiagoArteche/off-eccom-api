@@ -10,14 +10,16 @@ export class OrderRoutes {
     const orderController = new OrderController(orderService);
 
     router.get("/", orderController.getAllOrders);
+
     router.get("/:id", orderController.getOrderById);
+    router.delete("/:id", orderController.deleteOrder);
+    
+    router.post("/pay/:id", orderController.payOrder);
 
     router.post("/:cartId", orderController.createOrder);
-    router.post("/pay/:id", orderController.payOrder);
 
     router.put("/:orderId/:cartId", orderController.updateOrder);
 
-    router.delete("/:id", orderController.deleteOrder);
 
     return router;
   }

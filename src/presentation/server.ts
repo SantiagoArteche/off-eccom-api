@@ -1,8 +1,6 @@
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 import express, { Router } from "express";
-import swaggerUi from "swagger-ui-express";
-import swaggerjsdoc from "swagger-jsdoc";
 
 export class Server {
   private app = express();

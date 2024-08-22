@@ -1,0 +1,13 @@
+services:
+  off-ecomm-test:
+    container_name: off-ecomm-test
+    image: postgres:16.4
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./postgres-test:/var/lib/postgresql/data
+    ports:
+      - 5434:5432

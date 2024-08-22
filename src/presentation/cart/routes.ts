@@ -10,14 +10,15 @@ export class CartRoutes {
     const cartController = new CartController(cartService);
 
     router.get("/", cartController.getCarts);
+
     router.get("/:id", cartController.getCartById);
+    router.delete("/:id", cartController.deleteCart);
 
     router.post("/:userId", cartController.createCart);
 
     router.put("/:productId/:cartId", cartController.addProductToCart);
-
-    router.delete("/:id", cartController.deleteCart);
     router.delete("/:productId/:cartId", cartController.deleteCartItem);
+
     router.delete(
       "/removeproduct/:productId/:cartId",
       cartController.removeProductFromCart

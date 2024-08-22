@@ -1,4 +1,6 @@
 /dist
 /postgres
+/postgres-test
 /node_modules
 .env
+.env.test
