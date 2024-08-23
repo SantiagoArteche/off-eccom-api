@@ -22,7 +22,11 @@ export class UpdateProductDTO {
     if (category && category.length < 3)
       return ["Category must have more than 2 character"];
 
-    stock < 5 ? (lowStock = true) : (lowStock = false);
+    stock
+      ? stock < 5
+        ? (lowStock = true)
+        : (lowStock = false)
+      : (lowStock = null);
 
     if (!!createdAt === false) {
       createdAt = null;

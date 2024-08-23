@@ -21,13 +21,13 @@ export class CreateUserDTO {
 
     if (!firstName) return ["Firstname is required"];
     if (typeof firstName !== "string") return ["Firstname must be a string"];
-    if (firstName.length < 4 || firstName.length > 30)
-      return ["Firstname must have more than 3  and less than characters 30"];
+    if (firstName.length < 3 || firstName.length > 30)
+      return ["Firstname must have more than 2  and less than characters 30"];
 
     if (!lastName) return ["Lastname is required"];
     if (typeof lastName !== "string") return ["Lastname must be a string"];
-    if (lastName.length < 4 || lastName.length > 30)
-      return ["Lastname must have more than 3  and less than characters 30"];
+    if (lastName.length < 3 || lastName.length > 30)
+      return ["Lastname must have more than 2  and less than characters 30"];
 
     if (!password) return ["Password is required"];
     if (password.toString().length < 6)

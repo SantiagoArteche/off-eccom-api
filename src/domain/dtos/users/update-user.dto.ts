@@ -10,7 +10,7 @@ export class UpdateUserDTO {
   static create(obj: { [key: string]: any }): [string?, UpdateUserDTO?] {
     const { email, firstName, lastName, password, age } = obj;
 
-    if (age && isNaN(age)) return ["Age should be a number"];
+    if (age && isNaN(age)) return ["Age must be a number"];
 
     if (email && typeof email !== "string") return ["Email must be a string"];
     if (email && !email.includes("@")) return ["Invalid email"];
@@ -19,13 +19,13 @@ export class UpdateUserDTO {
 
     if (firstName && typeof firstName !== "string")
       return ["Firstname must be a string"];
-    if (firstName && (firstName.length < 4 || firstName.length > 30))
-      return ["Firstname must have more than 3  and less than characters 30"];
+    if (firstName && (firstName.length < 3 || firstName.length > 30))
+      return ["Firstname must have more than 2 and less than characters 30"];
 
     if (lastName && typeof lastName !== "string")
       return ["Lastname must be a string"];
-    if (lastName && (lastName.length < 4 || lastName.length > 30))
-      return ["Lastname must have more than 3  and less than characters 30"];
+    if (lastName && (lastName.length < 3 || lastName.length > 30))
+      return ["Lastname must have more than 2 and less than characters 30"];
 
     if (password && password.toString().length < 6)
       return ["Password must have at least 6 characters"];

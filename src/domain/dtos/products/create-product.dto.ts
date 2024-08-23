@@ -17,8 +17,9 @@ export class CreateProductDTO {
 
     if (!price) return ["Price is required"];
     if (typeof price !== "number") return ["Price must be a number"];
+    if (price <= 0) return ["Price must be greater than 0"];
 
-    if (!stock) stock = 0;
+    if (!!stock === false) stock = 0;
     if (typeof stock !== "number") return ["Stock must be a number"];
     stock < 5 ? (lowStock = true) : (lowStock = false);
 

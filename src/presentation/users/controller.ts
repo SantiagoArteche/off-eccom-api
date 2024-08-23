@@ -8,12 +8,12 @@ export class UserController {
 
   getUsers = (req: Request, res: Response) => {
     const { limit = 10, page = 1 } = req.query;
-    const [error, PaginationDto] = PaginationDTO.create(+page, +limit);
+    const [error, paginationDto] = PaginationDTO.create(+page, +limit);
 
     if (error) return res.status(400).send(error);
 
     this.userService
-      .getAll(PaginationDto!)
+      .getAll(paginationDto!)
       .then((users) => res.status(200).send(users))
       .catch((error) => CustomError.handleErrors(error, res));
   };

@@ -6,7 +6,7 @@ export class UpdateCategoryDTO {
 
     if (name && typeof name !== "string") return ["Name must be a string"];
     if (name && name.length < 3)
-      return ["Category names must have at least 3 characters"];
+      return ["Category name must have at least 3 characters"];
 
     if (!!createdAt === false) {
       createdAt = null;
