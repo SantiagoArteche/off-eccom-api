@@ -5,6 +5,7 @@ import express, { Router } from "express";
 export class Server {
   private app = express();
   private PORT = process.env.PORT ?? 7070;
+  private server: any;
 
   constructor(private routes: Router) {}
 
@@ -15,8 +16,16 @@ export class Server {
 
     this.app.use(this.routes);
 
-    this.app.listen(this.PORT, () =>
+    this.server = this.app.listen(this.PORT, () =>
       console.log(`Server running on port ${this.PORT}`)
     );
+  }
+
+  async close() {
+    return new Promise<void>((resolve) => {
+      if (this.server) {
+        this.server.close(resolve);
+      }
+    });
   }
 }

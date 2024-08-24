@@ -7,5 +7,5 @@ import { Server } from "./presentation/server";
 
 async function main() {
   const server = new Server(AppRoutes.routes);
-  server.start();
+  await server.start();
 }

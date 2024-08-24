@@ -1,4 +1,4 @@
-import { CreateUserDTO } from "../../../../src/domain/dtos/users/create-user.dto";
+import { CreateUserDTO } from "../../../../src/domain/dtos";
 describe("tests on create-user.dto.ts", () => {
   test("must create an create-user DTO", () => {
     const requestBody = {
@@ -115,8 +115,6 @@ describe("tests on create-user.dto.ts", () => {
     };
 
     const [error, createUserDto] = CreateUserDTO.create(requestBody);
-
-    console.log(error);
 
     expect(createUserDto).toBeFalsy();
     expect(error).toBeTruthy();

@@ -2,5 +2,6 @@
 /postgres
 /postgres-test
 /node_modules
+/coverage
 .env
 .env.test

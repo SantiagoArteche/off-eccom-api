@@ -1,4 +1,4 @@
-import { CreateProductDTO } from "../../../../src/domain/dtos/products/create-product.dto";
+import { CreateProductDTO } from "../../../../src/domain/dtos";
 describe("tests on create-product.dto.ts", () => {
   test("must return a create-product DTO", () => {
     const requestBody = {
@@ -246,7 +246,7 @@ describe("tests on create-product.dto.ts", () => {
       stock: 5,
       lowStock: "",
       category: "newCategory",
-      createdAt: "",
+      createdAt: "hello",
     };
 
     const [error, createProductDto] = CreateProductDTO.create(requestBody);

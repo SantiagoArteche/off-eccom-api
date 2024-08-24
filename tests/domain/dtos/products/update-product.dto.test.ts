@@ -1,4 +1,4 @@
-import { UpdateProductDTO } from "../../../../src/domain/dtos/products/update-product.dto";
+import { UpdateProductDTO } from "../../../../src/domain/dtos";
 describe("tests on create-product.dto.ts", () => {
   test("must return a update-product DTO", () => {
     const requestBody = {

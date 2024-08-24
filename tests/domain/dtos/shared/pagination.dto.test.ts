@@ -1,4 +1,4 @@
-import { PaginationDTO } from "../../../../src/domain/dtos/shared/pagination.dto";
+import { PaginationDTO } from "../../../../src/domain/dtos";
 describe("tests on pagination.dto.ts", () => {
   test("must return a pagination DTO", () => {
     const requestQuery = { page: 3, limit: 4 };

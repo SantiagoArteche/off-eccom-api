@@ -1,4 +1,4 @@
-import { UpdateUserDTO } from "../../../../src/domain/dtos/users/update-user.dto";
+import { UpdateUserDTO } from "../../../../src/domain/dtos";
 describe("tests on update-user.dto.ts", () => {
   test("must create an update-user DTO", () => {
     const requestBody = {
