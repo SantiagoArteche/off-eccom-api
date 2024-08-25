@@ -10,7 +10,8 @@ export class CartController {
     const { page = 1, limit = 10 } = req.query;
 
     const [error, paginationDto] = PaginationDTO.create(+page, +limit);
-    if (error) throw CustomError.badRequest(error);
+
+    if (error) return res.status(400).send(error);
 
     this.cartService
       .getCarts(paginationDto!)

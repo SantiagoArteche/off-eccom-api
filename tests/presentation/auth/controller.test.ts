@@ -5,6 +5,7 @@ import { Request } from "express";
 describe("test on auth/controller.ts", () => {
   let authServiceMock: any;
   let mockResponse: any;
+  let controller: AuthController;
   const customErrorSpy = jest.spyOn(CustomError, "handleErrors");
 
   beforeEach(async () => {
@@ -18,6 +19,7 @@ describe("test on auth/controller.ts", () => {
       send: jest.fn().mockReturnThis(),
       cookie: jest.fn().mockReturnThis(),
     };
+    controller = new AuthController(authServiceMock);
   });
 
   afterEach(() => {
@@ -25,8 +27,6 @@ describe("test on auth/controller.ts", () => {
   });
 
   test("must create an instance of auth controller", () => {
-    const controller = new AuthController(authServiceMock);
-
     expect(controller).toBeInstanceOf(AuthController);
     expect(controller).toHaveProperty("loginUser");
     expect(controller).toHaveProperty("validateUser");
@@ -44,8 +44,6 @@ describe("test on auth/controller.ts", () => {
     const mockRequest = {
       body: mockUser,
     };
-
-    const controller = new AuthController(authServiceMock);
 
     authServiceMock.login.mockResolvedValue({ mockRequest, token: "newToken" });
     await controller.loginUser(mockRequest as any, mockResponse);
@@ -75,7 +73,6 @@ describe("test on auth/controller.ts", () => {
 
   test("loginUser should return 400 if email or password is missing", async () => {
     const mockRequest = { body: { email: "test@example.com" } }; // Missing password
-    const controller = new AuthController(authServiceMock);
 
     await controller.loginUser(mockRequest as any, mockResponse);
 
@@ -92,8 +89,6 @@ describe("test on auth/controller.ts", () => {
     };
     const mockError = new Error("Login failed");
 
-    const controller = new AuthController(authServiceMock);
-
     authServiceMock.login.mockRejectedValue(mockError);
     await controller.loginUser(mockRequest as Request, mockResponse);
 
@@ -106,14 +101,13 @@ describe("test on auth/controller.ts", () => {
     const mockRequest = {
       params: {
         token: {
-          id: "123213",
+          id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e",
           email: "santi123@hotmail.com",
         },
       },
     };
 
     const respMessage = `User with email ${mockRequest.params.token.email} validated`;
-    const controller = new AuthController(authServiceMock);
 
     authServiceMock.validate.mockResolvedValue(respMessage);
     await controller.validateUser(mockRequest as any, mockResponse);
@@ -131,8 +125,6 @@ describe("test on auth/controller.ts", () => {
       params: {},
     };
 
-    const controller = new AuthController(authServiceMock);
-
     await controller.validateUser(mockRequest as any, mockResponse);
 
     expect(authServiceMock.validate).not.toHaveBeenCalled(); // Service should not be called
@@ -144,7 +136,7 @@ describe("test on auth/controller.ts", () => {
     const mockRequest = {
       params: {
         token: {
-          id: 3,
+          id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e",
           email: "santiarteche@hotmail.com",
         },
       },
@@ -152,7 +144,6 @@ describe("test on auth/controller.ts", () => {
     const mockError = new Error("Error in validation");
 
     authServiceMock.validate.mockRejectedValue(mockError);
-    const controller = new AuthController(authServiceMock);
     await controller.validateUser(mockRequest as any, mockResponse);
 
     expect(authServiceMock.validate).toHaveBeenCalledTimes(1);
@@ -165,7 +156,7 @@ describe("test on auth/controller.ts", () => {
       headers: {
         cookie: {
           email: "sanarteche@hotmail.com",
-          id: 123123,
+          id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e",
         },
       },
     };
@@ -173,7 +164,6 @@ describe("test on auth/controller.ts", () => {
     const respMessage = `User with email ${mockRequest.headers.cookie.email} validated`;
 
     authServiceMock.validateLogin.mockResolvedValue(respMessage);
-    const controller = new AuthController(authServiceMock);
     await controller.validateLogin(mockRequest as any, mockResponse);
 
     expect(authServiceMock.validateLogin).toHaveBeenCalledTimes(1);
@@ -190,8 +180,6 @@ describe("test on auth/controller.ts", () => {
       headers: {},
     };
 
-    const controller = new AuthController(authServiceMock);
-
     await controller.validateLogin(mockRequest as any, mockResponse);
 
     expect(authServiceMock.validateLogin).not.toHaveBeenCalled(); // Service should not be called
@@ -203,7 +191,7 @@ describe("test on auth/controller.ts", () => {
     const mockRequest = {
       headers: {
         cookie: {
-          id: 3,
+          id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e",
           email: "santiarteche@hotmail.com",
         },
       },
@@ -211,7 +199,6 @@ describe("test on auth/controller.ts", () => {
     const mockError = new Error("Error in validation");
 
     authServiceMock.validateLogin.mockRejectedValue(mockError);
-    const controller = new AuthController(authServiceMock);
     await controller.validateLogin(mockRequest as any, mockResponse);
 
     expect(authServiceMock.validateLogin).toHaveBeenCalledTimes(1);

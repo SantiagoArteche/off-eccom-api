@@ -3,6 +3,7 @@ import { UserController } from "../../../src/presentation/users/controller";
 describe("test on users/controller.ts", () => {
   let userServiceMock: any;
   let mockResponse: any;
+  let controller: UserController;
   const customErrorSpy = jest.spyOn(CustomError, "handleErrors");
 
   beforeEach(() => {
@@ -19,6 +20,7 @@ describe("test on users/controller.ts", () => {
       status: jest.fn().mockReturnThis(),
       send: jest.fn().mockReturnThis(),
     };
+    controller = new UserController(userServiceMock);
   });
 
   afterEach(() => {
@@ -26,8 +28,6 @@ describe("test on users/controller.ts", () => {
   });
 
   test("must create an instance of user controller", () => {
-    const controller = new UserController(userServiceMock);
-
     expect(controller).toBeInstanceOf(UserController);
     expect(controller).toHaveProperty("createUser");
     expect(controller).toHaveProperty("deleteUserById");
@@ -44,7 +44,7 @@ describe("test on users/controller.ts", () => {
   });
 
   test("getUsers must return an object with users, pages and limit", async () => {
-    const mockRequest = { query: { limit: 3, page: 2 } };
+    const mockRequest = { query: { limit: 3, page: 1 } };
     const resolvedValue = {
       currentPage: mockRequest.query.page,
       limit: mockRequest.query.limit,
@@ -53,7 +53,7 @@ describe("test on users/controller.ts", () => {
       totalUsers: 1,
       users: [
         {
-          id: 1,
+          id: expect.any(String),
           age: 22,
           firstName: "Santiago",
           lastName: "Arteche",
@@ -63,7 +63,6 @@ describe("test on users/controller.ts", () => {
       ],
     };
 
-    const controller = new UserController(userServiceMock);
     userServiceMock.getAll.mockResolvedValue(resolvedValue);
     await controller.getUsers(mockRequest as any, mockResponse);
 
@@ -76,8 +75,6 @@ describe("test on users/controller.ts", () => {
 
   test("getUsers must return status 400 if pagination is missing or invalid", async () => {
     const mockRequest = { query: { limit: "b", page: 2 } };
-
-    const controller = new UserController(userServiceMock);
 
     await controller.getUsers(mockRequest as any, mockResponse);
 
@@ -93,8 +90,6 @@ describe("test on users/controller.ts", () => {
 
     const mockError = new Error("Bad request");
 
-    const controller = new UserController(userServiceMock);
-
     userServiceMock.getAll.mockRejectedValue(mockError);
     await controller.getUsers(mockRequest as any, mockResponse);
 
@@ -104,13 +99,13 @@ describe("test on users/controller.ts", () => {
   });
 
   test("getUserById must return an object with the user", async () => {
-    const mockRequest = { params: { id: 123456 } };
-
-    const controller = new UserController(userServiceMock);
+    const mockRequest = {
+      params: { id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e" },
+    };
 
     const resolvedValue = {
       user: {
-        id: 123456,
+        id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e",
         age: 22,
         firstName: "Santiago",
         lastName: "Arteche",
@@ -129,9 +124,9 @@ describe("test on users/controller.ts", () => {
   });
 
   test("getUserById should handle service errors and call CustomError.handleErrors", async () => {
-    const mockRequest = { params: { id: 123456 } };
-
-    const controller = new UserController(userServiceMock);
+    const mockRequest = {
+      params: { id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e" },
+    };
 
     const mockError = new Error("Bad request");
     await userServiceMock.getById.mockRejectedValue(mockError);
@@ -154,12 +149,10 @@ describe("test on users/controller.ts", () => {
       },
     };
 
-    const controller = new UserController(userServiceMock);
-
     const resolvedValue = {
       msg: "User Created",
       user: {
-        id: 123456,
+        id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e",
         age: 22,
         firstName: "Santiago",
         lastName: "Arteche",
@@ -188,8 +181,6 @@ describe("test on users/controller.ts", () => {
       },
     };
 
-    const controller = new UserController(userServiceMock);
-
     const mockError = new Error("Bad request");
     await userServiceMock.create.mockRejectedValue(mockError);
     await controller.createUser(mockRequest as any, mockResponse);
@@ -202,7 +193,7 @@ describe("test on users/controller.ts", () => {
 
   test("updateUserById must return an object with a msg and the user", async () => {
     const mockRequest = {
-      params: { id: 12346 },
+      params: { id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e" },
       body: {
         age: 22,
         firstName: "Santiago",
@@ -222,7 +213,6 @@ describe("test on users/controller.ts", () => {
         email: mockRequest.body.email,
       },
     };
-    const controller = new UserController(userServiceMock);
 
     await userServiceMock.update.mockResolvedValue(resolvedValue);
     await controller.updateUserById(mockRequest as any, mockResponse);
@@ -239,7 +229,7 @@ describe("test on users/controller.ts", () => {
 
   test("updateUserById should handle service errors and call CustomError.handleErrors", async () => {
     const mockRequest = {
-      params: { id: 12346 },
+      params: { id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e" },
       body: {
         age: 22,
         firstName: "Santiago",
@@ -249,7 +239,6 @@ describe("test on users/controller.ts", () => {
       },
     };
 
-    const controller = new UserController(userServiceMock);
     const mockError = new Error("Bad request");
 
     await userServiceMock.update.mockRejectedValue(mockError);
@@ -262,10 +251,11 @@ describe("test on users/controller.ts", () => {
   });
 
   test("deleteUserById must return a string with the user id", async () => {
-    const mockRequest = { params: { id: 123456 } };
+    const mockRequest = {
+      params: { id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e" },
+    };
 
     const resolvedValue = `User with id ${mockRequest.params.id} was deleted`;
-    const controller = new UserController(userServiceMock);
 
     await userServiceMock.delete.mockResolvedValue(resolvedValue);
     await controller.deleteUserById(mockRequest as any, mockResponse);
@@ -279,10 +269,8 @@ describe("test on users/controller.ts", () => {
 
   test("deleteUserById should handle service errors and call CustomError.handleErrors", async () => {
     const mockRequest = {
-      params: { id: 12346 },
+      params: { id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e" },
     };
-
-    const controller = new UserController(userServiceMock);
 
     const mockError = new Error("Bad request");
     await userServiceMock.delete.mockRejectedValue(mockError);
@@ -295,13 +283,13 @@ describe("test on users/controller.ts", () => {
   });
 
   test("reSendValidation should return a string with an user email", async () => {
-    const mockRequest = { params: { id: 123456 } };
+    const mockRequest = {
+      params: { id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e" },
+    };
 
     const userEmail = "santiagoarteche@hotmail.com";
     // find the email of the user in prisma with his ID
     const resolvedValue = `Email resend to ${userEmail}`;
-
-    const controller = new UserController(userServiceMock);
 
     await userServiceMock.reSendValidationMail.mockResolvedValue(resolvedValue);
     await controller.reSendValidation(mockRequest as any, mockResponse);
@@ -317,10 +305,8 @@ describe("test on users/controller.ts", () => {
 
   test("reSendValidation should handle service errors and call CustomError.handleErrors", async () => {
     const mockRequest = {
-      params: { id: 12346 },
+      params: { id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e" },
     };
-
-    const controller = new UserController(userServiceMock);
 
     const mockError = new Error("Bad request");
     await userServiceMock.reSendValidationMail.mockRejectedValue(mockError);

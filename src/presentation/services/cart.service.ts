@@ -304,7 +304,7 @@ export class CartService {
         ]);
       }
 
-      return `Quantity on product ${itemCart.id} from cart ${cartId} was updated`;
+      return `Quantity on product ${productId} from cart ${cartId} was updated`;
     } catch (error) {
       throw error;
     }
@@ -365,7 +365,7 @@ export class CartService {
         }),
       ]);
 
-      return `Product ${itemCart.id} from cart ${cartId} was deleted`;
+      return `Product ${productId} from cart ${cartId} was deleted`;
     } catch (error) {
       throw error;
     }
