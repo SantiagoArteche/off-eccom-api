@@ -132,7 +132,10 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#/components/schemas/Categories"
+                properties:
+                  updatedCategory:
+                    type: object
+                    $ref: "#/components/schemas/Categories"
         "400":
           description: Bad request
         "404":

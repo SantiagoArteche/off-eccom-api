@@ -106,7 +106,7 @@ export class CategoryService {
         },
       });
 
-      return updateCategory;
+      return { updatedCategory: updateCategory };
     } catch (error: any) {
       if (error.code === "P2002")
         throw CustomError.badRequest("Category with that name already exist");

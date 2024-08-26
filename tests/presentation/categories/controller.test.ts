@@ -254,9 +254,11 @@ describe("tests on categories/controller.ts", () => {
     };
 
     const resolvedValue = {
-      id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e",
-      name: "newCategory",
-      createdAt: "2024-08-25",
+      updatedCategory: {
+        id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e",
+        name: "newCategory",
+        createdAt: "2024-08-25",
+      },
     };
     await categoryMockService.update.mockResolvedValue(resolvedValue);
     await controller.updateCategory(mockRequest as any, mockResponse);

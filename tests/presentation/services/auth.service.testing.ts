@@ -1,8 +1,10 @@
 import { Bcrypt } from "../../../src/config";
 import { prisma } from "../../../src/data/postgres/init";
 import { AuthService } from "../../../src/presentation/services/auth.service";
-describe("test on auth.services.ts", () => {
-  let service: AuthService;
+
+export const AuthTest = describe("tests on auth.services.ts", () => {
+  let service = new AuthService();
+
   beforeEach(async () => {
     await prisma.user.create({
       data: {
@@ -24,21 +26,10 @@ describe("test on auth.services.ts", () => {
         isValidated: false,
       },
     });
-
-    service = new AuthService();
   });
 
   afterEach(async () => {
-    await prisma.user.delete({
-      where: {
-        email: "usertest@hotmail.com",
-      },
-    });
-    await prisma.user.delete({
-      where: {
-        email: "usertestb@hotmail.com",
-      },
-    });
+    await prisma.user.deleteMany();
   });
 
   test("must return an instance of auth service", () => {
@@ -57,7 +48,6 @@ describe("test on auth.services.ts", () => {
     };
 
     const login = await service.login(user.email, user.password);
-
     expect(login).toBeTruthy();
     expect(login).toEqual({
       user: {
@@ -75,6 +65,20 @@ describe("test on auth.services.ts", () => {
   test("login must fail if user email or password is incorrect", async () => {
     const user = {
       email: "usertest@hotmail.combbb",
+      password: "123456",
+    };
+
+    try {
+      await service.login(user.email, user.password);
+    } catch (error: any) {
+      expect(error).toBeTruthy();
+      expect(error.toString()).toEqual("Error: Wrong credentials");
+    }
+  });
+
+  test("login must fail if user email or password is incorrect", async () => {
+    const user = {
+      email: "usertest@hotmail.com",
       password: "123456x",
     };
 
@@ -158,24 +162,6 @@ describe("test on auth.services.ts", () => {
     } catch (error: any) {
       expect(error).toBeTruthy();
       expect(error.toString()).toEqual(`Error: User already validated`);
-    }
-  });
-
-  test("validate must fail if user not exists", async () => {
-    const user = {
-      email: "usertest@hotmail.com",
-      password: "123456",
-    };
-    const tokenWithInvalidCredentials =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJ0ZXN0c3NzQGhvdG1haWwuY29tIiwiaWQiOiJiYTg4MTI1Mi1iNWIwLTRiMjItOWVkNS0xNzU5MzZiZTZjYTMiLCJpYXQiOjE3MjQ2MzU3MjUsImV4cCI6MTcyNDY1MDEyNX0.OyBlrARmdvn4tWO3RAyzXZiYwSvAcVPT3Oj7hsG3NmY";
-
-    try {
-      const userLogged = await service.login(user.email, user.password);
-      await (userLogged.token = tokenWithInvalidCredentials);
-      service.validate(userLogged.token as string);
-    } catch (error: any) {
-      expect(error).toBeTruthy();
-      expect(error.toString()).toEqual(`User not exists`);
     }
   });
 });

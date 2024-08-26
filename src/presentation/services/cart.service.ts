@@ -251,14 +251,13 @@ export class CartService {
         (item) => item.productId === productId
       );
 
-      if (!itemCart) throw CustomError.notFound("Product in Cart not found");
+      if (!itemCart) throw CustomError.notFound("Product in cart not found");
 
       const tax = cart.tax - product.price * 0.21;
       const subTotal = cart.subtotal - product.price;
       const total = cart.total - product.price - product.price * 0.21;
 
       if (itemCart.quantity <= 1) {
-        console.log(tax < 0);
         await Promise.all([
           prisma.cartItem.delete({
             where: {
@@ -335,7 +334,7 @@ export class CartService {
         (item) => item.productId === productId
       );
 
-      if (!itemCart) throw CustomError.notFound("Product in Cart not found");
+      if (!itemCart) throw CustomError.notFound("Product in cart not found");
 
       const total =
         cart.total -
