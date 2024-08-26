@@ -170,6 +170,23 @@ describe("test on users/controller.ts", () => {
     expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
   });
 
+  test("createUser should return a error if the request body have missing properties or wrong values", async () => {
+    const mockRequest = {
+      body: {
+        firstName: "Santiago",
+        lastName: "Arteche",
+        email: "sanarteche@hotmail.com",
+        password: "123456",
+      },
+    };
+
+    await controller.createUser(mockRequest as any, mockResponse);
+
+    expect(userServiceMock.create).not.toHaveBeenCalled();
+    expect(mockResponse.status).toHaveBeenCalledWith(400);
+    expect(mockResponse.send).toHaveBeenCalledWith("Age is required");
+  });
+
   test("createUser should handle service errors and call CustomError.handleErrors", async () => {
     const mockRequest = {
       body: {
@@ -225,6 +242,27 @@ describe("test on users/controller.ts", () => {
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
     expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+  });
+
+  test("updateUserById should return a error if the request body have wrong values", async () => {
+    const mockRequest = {
+      params: {
+        id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e",
+      },
+      body: {
+        age: "bbb",
+        firstName: "Santiago",
+        lastName: "Arteche",
+        email: "sanarteche@hotmail.com",
+        password: "123456",
+      },
+    };
+
+    await controller.updateUserById(mockRequest as any, mockResponse);
+
+    expect(userServiceMock.update).not.toHaveBeenCalled();
+    expect(mockResponse.status).toHaveBeenCalledWith(400);
+    expect(mockResponse.send).toHaveBeenCalledWith("Age must be a number");
   });
 
   test("updateUserById should handle service errors and call CustomError.handleErrors", async () => {

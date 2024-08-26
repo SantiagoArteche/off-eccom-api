@@ -151,13 +151,16 @@ describe("tests on categories/controller.ts", () => {
     const mockRequest = {
       body: {
         name: "newCategory",
+        createdAt: "2024-8-8",
       },
     };
 
     const resolvedValue = {
       category: {
         id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e",
-        name: mockRequest.body.name,
+        name: "newCategory",
+        createdAt: "2024-8-8",
+        updatedAt: new Date(),
       },
     };
 
@@ -166,12 +169,24 @@ describe("tests on categories/controller.ts", () => {
 
     expect(categoryMockService.create).toHaveBeenCalledTimes(1);
     expect(categoryMockService.create).toHaveBeenCalledWith({
-      ...mockRequest.body,
-      createdAt: new Date(),
+      name: mockRequest.body.name,
+      createdAt: new Date(mockRequest.body.createdAt),
     });
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
     expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+  });
+
+  test("createCategory should return a error if the request body is missing name", async () => {
+    const mockRequest = {
+      body: {},
+    };
+
+    await controller.createCategory(mockRequest as any, mockResponse);
+
+    expect(categoryMockService.create).not.toHaveBeenCalled();
+    expect(mockResponse.status).toHaveBeenCalledWith(400);
+    expect(mockResponse.send).toHaveBeenCalledWith("Name is required");
   });
 
   test("createCategory should handle service errors and call CustomError.handleErrors", async () => {
@@ -257,6 +272,23 @@ describe("tests on categories/controller.ts", () => {
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
     expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+  });
+
+  test("updateCategory should return a error if the request body have wrong values", async () => {
+    const mockRequest = {
+      params: {
+        id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e",
+      },
+      body: {
+        name: 3112312,
+      },
+    };
+
+    await controller.updateCategory(mockRequest as any, mockResponse);
+
+    expect(categoryMockService.update).not.toHaveBeenCalled();
+    expect(mockResponse.status).toHaveBeenCalledWith(400);
+    expect(mockResponse.send).toHaveBeenCalledWith("Name must be a string");
   });
 
   test("updateCategory should handle service errors and call CustomError.handleErrors", async () => {

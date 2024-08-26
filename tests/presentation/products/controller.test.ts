@@ -185,6 +185,18 @@ describe("tests on products/controller.ts", () => {
     expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
   });
 
+  test("createProduct should return a error if the request body is missing required property or have wrong values", async () => {
+    const mockRequest = {
+      body: {},
+    };
+
+    await controller.createProduct(mockRequest as any, mockResponse);
+
+    expect(productMockService.create).not.toHaveBeenCalled();
+    expect(mockResponse.status).toHaveBeenCalledWith(400);
+    expect(mockResponse.send).toHaveBeenCalledWith("Name is required");
+  });
+
   test("createProduct should handle service errors and call CustomError.handleErrors", async () => {
     const mockRequest = {
       body: {
@@ -281,6 +293,21 @@ describe("tests on products/controller.ts", () => {
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
     expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+  });
+
+  test("updateProduct should return a error if the request body is missing required property or have wrong values", async () => {
+    const mockRequest = {
+      params: { id: "a6c02b5a-c8df-4405-b607-75a4aa9c557e" },
+      body: {
+        name: 123213,
+      },
+    };
+
+    await controller.updateProduct(mockRequest as any, mockResponse);
+
+    expect(productMockService.update).not.toHaveBeenCalled();
+    expect(mockResponse.status).toHaveBeenCalledWith(400);
+    expect(mockResponse.send).toHaveBeenCalledWith("Name must be a string");
   });
 
   test("updateProduct should handle service errors and call CustomError.handleErrors", async () => {
