@@ -34,6 +34,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^22.2.0",
     "@types/nodemailer": "^6.4.15",
+    "@types/supertest": "^6.0.2",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
     "dotenv-cli": "^7.4.2",

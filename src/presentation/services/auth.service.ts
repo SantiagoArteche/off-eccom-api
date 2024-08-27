@@ -51,7 +51,7 @@ export class AuthService {
         },
       });
 
-      if (!user) throw CustomError.badRequest("User not exists");
+      if (!user) throw CustomError.notFound("User not exists");
 
       if (!user.isValidated)
         throw CustomError.unauthorized("User not validated");
@@ -79,7 +79,7 @@ export class AuthService {
         },
       });
 
-      if (!user) throw CustomError.badRequest("User not exists");
+      if (!user) throw CustomError.notFound("User not exists");
 
       if (user.isValidated)
         throw CustomError.badRequest("User already validated");

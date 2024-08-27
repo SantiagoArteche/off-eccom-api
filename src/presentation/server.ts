@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import express, { Router } from "express";
 
 export class Server {
-  private app = express();
+  public app = express();
   private PORT = process.env.PORT ?? 7070;
   private server: any;
 
