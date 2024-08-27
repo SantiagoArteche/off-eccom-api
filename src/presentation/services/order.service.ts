@@ -34,7 +34,7 @@ export class OrderService {
         },
       });
 
-      if (!order) CustomError.notFound(`Order with id ${id} not found`);
+      if (!order) throw CustomError.notFound(`Order with id ${id} not found`);
 
       return { order };
     } catch (error) {
