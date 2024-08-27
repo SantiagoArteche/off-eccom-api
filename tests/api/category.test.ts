@@ -41,6 +41,28 @@ describe("tests on /api/categories", () => {
     });
   });
 
+  test("GET /api/categories pagination must work", async () => {
+    const mockPagination = { limit: 5, page: 2 };
+    const { body, ok, statusCode } = await api.get(
+      `/api/categories?limit=${mockPagination.limit}&page=${mockPagination.page}`
+    );
+
+    expect(ok).toBeTruthy();
+    expect(statusCode).toBe(200);
+    expect(body).toEqual({
+      currentPage: mockPagination.page,
+      limit: mockPagination.limit,
+      next: `/api/categories?page=${mockPagination.page + 1}&limit=${
+        mockPagination.limit
+      }`,
+      categories: expect.any(Array),
+      prev: `/api/categories?page=${mockPagination.page - 1}&limit=${
+        mockPagination.limit
+      }`,
+      totalCategories: expect.any(Number),
+    });
+  });
+
   test("GET /api/categories/:id must return the category found", async () => {
     const { statusCode, body, ok } = await api.get(
       `/api/categories/${category.id}`

@@ -50,6 +50,28 @@ describe("tests on /api/products", () => {
     });
   });
 
+  test("GET /api/products pagination must work", async () => {
+    const mockPagination = { limit: 5, page: 2 };
+    const { body, ok, statusCode } = await api.get(
+      `/api/products?limit=${mockPagination.limit}&page=${mockPagination.page}`
+    );
+
+    expect(ok).toBeTruthy();
+    expect(statusCode).toBe(200);
+    expect(body).toEqual({
+      currentPage: mockPagination.page,
+      limit: mockPagination.limit,
+      next: `/api/products?page=${mockPagination.page + 1}&limit=${
+        mockPagination.limit
+      }`,
+      products: expect.any(Array),
+      prev: `/api/products?page=${mockPagination.page - 1}&limit=${
+        mockPagination.limit
+      }`,
+      totalProducts: expect.any(Number),
+    });
+  });
+
   test("GET /api/products/:id must get a product by id", async () => {
     const { statusCode, body, ok } = await api.get(
       `/api/products/${product.id}`

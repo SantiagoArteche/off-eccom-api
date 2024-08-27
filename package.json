@@ -6,7 +6,7 @@
   "scripts": {
     "migrate-test:postgres": "dotenv -e .env.test -- npx prisma migrate deploy",
     "docker:test": "docker-compose -f docker-compose-test.yml --env-file .env.test up -d",
-    "test": "npm run docker:test && jest",
+    "test": "npm run docker:test && jest --silent",
     "test:watch": "npm run docker:test && jest --watch",
     "test:coverage": "npm run docker:test && jest --coverage",
     "dev": "ts-node-dev --respawn src/app.ts",

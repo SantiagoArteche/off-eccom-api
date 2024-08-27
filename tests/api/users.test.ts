@@ -14,7 +14,7 @@ describe("tests on /api/users", () => {
     user = await prisma.user.create({
       data: {
         age: 20,
-        email: "santiarteche@hotmail.com",
+        email: "arteche@hotmail.com",
         firstName: "Santiago",
         lastName: "Arteche",
         password: `123456`,
@@ -43,6 +43,28 @@ describe("tests on /api/users", () => {
     });
   });
 
+  test("GET /api/users pagination must work", async () => {
+    const mockPagination = { limit: 5, page: 2 };
+    const { body, ok, statusCode } = await api.get(
+      `/api/users?limit=${mockPagination.limit}&page=${mockPagination.page}`
+    );
+
+    expect(ok).toBeTruthy();
+    expect(statusCode).toBe(200);
+    expect(body).toEqual({
+      currentPage: mockPagination.page,
+      limit: mockPagination.limit,
+      next: `/api/users?page=${mockPagination.page + 1}&limit=${
+        mockPagination.limit
+      }`,
+      users: expect.any(Array),
+      prev: `/api/users?page=${mockPagination.page - 1}&limit=${
+        mockPagination.limit
+      }`,
+      totalUsers: expect.any(Number),
+    });
+  });
+
   test("GET /api/users/:id must get an user by id", async () => {
     const { ok, statusCode, body } = await api.get(`/api/users/${user.id}`);
 
@@ -51,7 +73,7 @@ describe("tests on /api/users", () => {
     expect(body).toEqual({
       user: {
         age: 20,
-        email: "santiarteche@hotmail.com",
+        email: "arteche@hotmail.com",
         firstName: "Santiago",
         id: expect.any(String),
         isValidated: expect.any(Boolean),
@@ -104,7 +126,7 @@ describe("tests on /api/users", () => {
       .post("/api/users")
       .send({
         age: 20,
-        email: "santiarteche@hotmail.com",
+        email: "arteche@hotmail.com",
         firstName: "Santiago",
         isValidated: false,
         lastName: "Arteche",
@@ -122,7 +144,7 @@ describe("tests on /api/users", () => {
       .post("/api/users")
       .send({
         age: "wrongAge",
-        email: "santiarteche@hotmail.com",
+        email: "arteche@hotmail.com",
         firstName: "Santiago",
         isValidated: false,
         lastName: "Arteche",
@@ -139,7 +161,7 @@ describe("tests on /api/users", () => {
     const { statusCode, ok, text, badRequest } = await api
       .post("/api/users")
       .send({
-        email: "santiarteche@hotmail.com",
+        email: "arteche@hotmail.com",
         firstName: "Santiago",
         isValidated: false,
         lastName: "Arteche",
@@ -206,7 +228,7 @@ describe("tests on /api/users", () => {
       msg: "User Updated",
       user: {
         age: 20,
-        email: "santiarteche@hotmail.com",
+        email: "arteche@hotmail.com",
         firstName: "update user name",
         id: user.id,
         isValidated: false,
