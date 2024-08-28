@@ -1,8 +1,8 @@
 {
   "name": "off-ecomm-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "migrate-test:postgres": "dotenv -e .env.test -- npx prisma migrate deploy",
     "docker:test": "docker-compose -f docker-compose-test.yml --env-file .env.test up -d",
@@ -10,7 +10,8 @@
     "test:watch": "npm run docker:test && jest --watch",
     "test:coverage": "npm run docker:test && jest --coverage --silent",
     "dev": "ts-node-dev --respawn src/app.ts",
-    "build": "rimraf ./dist && tsc"
+    "build": "rimraf ./dist && tsc",
+    "start": "node dist/app.js"
   },
   "keywords": [],
   "author": "",
