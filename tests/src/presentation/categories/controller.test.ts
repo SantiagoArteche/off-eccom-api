@@ -1,7 +1,6 @@
 import { CustomError } from "../../../../src/domain/errors/custom-errors";
 import { CategoryController } from "../../../../src/presentation/categories/controller";
 
-
 describe("tests on categories/controller.ts", () => {
   let categoryMockService: any;
   let mockResponse: any;
@@ -18,7 +17,7 @@ describe("tests on categories/controller.ts", () => {
     };
     mockResponse = {
       status: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
     };
     controller = new CategoryController(categoryMockService);
   });
@@ -66,7 +65,7 @@ describe("tests on categories/controller.ts", () => {
     expect(categoryMockService.getAll).toHaveBeenCalledWith(mockRequest.query);
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("getCategories should return 400 if limit or page are not numbers", async () => {
@@ -75,7 +74,7 @@ describe("tests on categories/controller.ts", () => {
     controller.getCategories(mockRequest as any, mockResponse);
 
     expect(categoryMockService.getAll).not.toHaveBeenCalled();
-    expect(mockResponse.send).toHaveBeenCalledWith(
+    expect(mockResponse.json).toHaveBeenCalledWith(
       "Page and limit must be numbers"
     );
     expect(mockResponse.status).toHaveBeenCalledWith(400);
@@ -87,7 +86,7 @@ describe("tests on categories/controller.ts", () => {
     controller.getCategories(mockRequest as any, mockResponse);
 
     expect(categoryMockService.getAll).not.toHaveBeenCalled();
-    expect(mockResponse.send).toHaveBeenCalledWith(
+    expect(mockResponse.json).toHaveBeenCalledWith(
       "Page and limit must be greater than 0"
     );
     expect(mockResponse.status).toHaveBeenCalledWith(400);
@@ -130,7 +129,7 @@ describe("tests on categories/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("getCategory should handle service errors and call CustomError.handleErrors", async () => {
@@ -176,7 +175,7 @@ describe("tests on categories/controller.ts", () => {
     });
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("createCategory should return a error if the request body is missing name", async () => {
@@ -188,7 +187,7 @@ describe("tests on categories/controller.ts", () => {
 
     expect(categoryMockService.create).not.toHaveBeenCalled();
     expect(mockResponse.status).toHaveBeenCalledWith(400);
-    expect(mockResponse.send).toHaveBeenCalledWith("Name is required");
+    expect(mockResponse.json).toHaveBeenCalledWith("Name is required");
   });
 
   test("createCategory should handle service errors and call CustomError.handleErrors", async () => {
@@ -225,7 +224,7 @@ describe("tests on categories/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("deleteCategory should handle service errors and call CustomError.handleErrors", async () => {
@@ -275,7 +274,7 @@ describe("tests on categories/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("updateCategory should return a error if the request body have wrong values", async () => {
@@ -292,7 +291,7 @@ describe("tests on categories/controller.ts", () => {
 
     expect(categoryMockService.update).not.toHaveBeenCalled();
     expect(mockResponse.status).toHaveBeenCalledWith(400);
-    expect(mockResponse.send).toHaveBeenCalledWith("Name must be a string");
+    expect(mockResponse.json).toHaveBeenCalledWith("Name must be a string");
   });
 
   test("updateCategory should handle service errors and call CustomError.handleErrors", async () => {

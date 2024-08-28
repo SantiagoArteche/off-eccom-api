@@ -1,7 +1,6 @@
 import { CustomError } from "../../../../src/domain/errors/custom-errors";
 import { CartController } from "../../../../src/presentation/cart/controller";
 
-
 describe("tests on cart/controller.ts", () => {
   let cartMockService: any;
   let mockResponse: any;
@@ -20,7 +19,7 @@ describe("tests on cart/controller.ts", () => {
     };
     mockResponse = {
       status: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
     };
     controller = new CartController(cartMockService);
   });
@@ -65,7 +64,7 @@ describe("tests on cart/controller.ts", () => {
     expect(cartMockService.getCarts).toHaveBeenCalledWith(mockRequest.query);
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("getCarts should return 400 if limit or page are not numbers", async () => {
@@ -74,7 +73,7 @@ describe("tests on cart/controller.ts", () => {
     await controller.getCarts(mockRequest as any, mockResponse);
 
     expect(cartMockService.getCarts).not.toHaveBeenCalled();
-    expect(mockResponse.send).toHaveBeenCalledWith(
+    expect(mockResponse.json).toHaveBeenCalledWith(
       "Page and limit must be numbers"
     );
     expect(mockResponse.status).toHaveBeenCalledWith(400);
@@ -86,7 +85,7 @@ describe("tests on cart/controller.ts", () => {
     await controller.getCarts(mockRequest as any, mockResponse);
 
     expect(cartMockService.getCarts).not.toHaveBeenCalled();
-    expect(mockResponse.send).toHaveBeenCalledWith(
+    expect(mockResponse.json).toHaveBeenCalledWith(
       "Page and limit must be greater than 0"
     );
     expect(mockResponse.status).toHaveBeenCalledWith(400);
@@ -129,7 +128,7 @@ describe("tests on cart/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("getCartById should handle service errors and call CustomError.handleErrors", async () => {
@@ -180,7 +179,7 @@ describe("tests on cart/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("addProductToCart must fail if quantity isNaN", async () => {
@@ -196,7 +195,7 @@ describe("tests on cart/controller.ts", () => {
 
     expect(cartMockService.addProductToCart).not.toHaveBeenCalled();
     expect(mockResponse.status).toHaveBeenCalledWith(400);
-    expect(mockResponse.send).toHaveBeenCalledWith("Quantity must be a number");
+    expect(mockResponse.json).toHaveBeenCalledWith("Quantity must be a number");
   });
 
   test("addProductToCart should handle service errors and call CustomError.handleErrors", async () => {
@@ -243,7 +242,7 @@ describe("tests on cart/controller.ts", () => {
       mockRequest.params.userId
     );
     expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("createCart should handle service errors and call CustomError.handleErrors", async () => {
@@ -280,7 +279,7 @@ describe("tests on cart/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("deleteCart should handle service errors and call CustomError.handleErrors", async () => {
@@ -318,7 +317,7 @@ describe("tests on cart/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("deleteCartItem should handle service errors and call CustomError.handleErrors", async () => {
@@ -359,7 +358,7 @@ describe("tests on cart/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("removeProductFromCart should handle service errors and call CustomError.handleErrors", async () => {

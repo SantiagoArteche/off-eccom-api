@@ -10,11 +10,11 @@ export class UserController {
     const { limit = 10, page = 1 } = req.query;
     const [error, paginationDto] = PaginationDTO.create(+page, +limit);
 
-    if (error) return res.status(400).send(error);
+    if (error) return res.status(400).json(error);
 
     this.userService
       .getAll(paginationDto!)
-      .then((users) => res.status(200).send(users))
+      .then((users) => res.status(200).json(users))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -23,17 +23,17 @@ export class UserController {
 
     this.userService
       .getById(id)
-      .then((user) => res.status(200).send(user))
+      .then((user) => res.status(200).json(user))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
   createUser = (req: Request, res: Response) => {
     const [error, createUserDto] = CreateUserDTO.create(req.body)!;
-    if (error) return res.status(400).send(error);
+    if (error) return res.status(400).json(error);
 
     this.userService
       .create(createUserDto!)
-      .then((user) => res.status(201).send(user))
+      .then((user) => res.status(201).json(user))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -41,11 +41,11 @@ export class UserController {
     const { id } = req.params;
     const [error, updateUserDto] = UpdateUserDTO.create(req.body);
 
-    if (error) return res.status(400).send(error);
+    if (error) return res.status(400).json(error);
 
     this.userService
       .update(updateUserDto!, id)
-      .then((user) => res.status(201).send(user))
+      .then((user) => res.status(201).json(user))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -54,7 +54,7 @@ export class UserController {
 
     this.userService
       .delete(id)
-      .then((user) => res.status(200).send(user))
+      .then((user) => res.status(200).json(user))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -63,7 +63,7 @@ export class UserController {
 
     this.userService
       .reSendValidationMail(id)
-      .then((userValidated) => res.status(200).send(userValidated))
+      .then((userValidated) => res.status(200).json(userValidated))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 }

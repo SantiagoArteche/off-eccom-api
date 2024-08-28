@@ -14,11 +14,11 @@ export class ProductController {
     const { page = 1, limit = 10 } = req.query;
     const [error, paginationDto] = PaginationDTO.create(+page, +limit);
 
-    if (error) return res.status(400).send(error);
+    if (error) return res.status(400).json(error);
 
     this.productService
       .getAll(paginationDto!)
-      .then((products) => res.status(200).send(products))
+      .then((products) => res.status(200).json(products))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -27,18 +27,18 @@ export class ProductController {
 
     this.productService
       .getById(id)
-      .then((product) => res.status(200).send(product))
+      .then((product) => res.status(200).json(product))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
   createProduct = (req: Request, res: Response) => {
     const [error, createProductDto] = CreateProductDTO.create(req.body);
 
-    if (error) return res.status(400).send(error);
+    if (error) return res.status(400).json(error);
 
     this.productService
       .create(createProductDto!)
-      .then((newProd) => res.status(201).send(newProd))
+      .then((newProd) => res.status(201).json(newProd))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -46,11 +46,11 @@ export class ProductController {
     const { id } = req.params;
     const [error, updateProductDto] = UpdateProductDTO.create(req.body);
 
-    if (error) return res.status(400).send(error);
+    if (error) return res.status(400).json(error);
 
     this.productService
       .update(id, updateProductDto!)
-      .then((updatedProd) => res.status(201).send(updatedProd))
+      .then((updatedProd) => res.status(201).json(updatedProd))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -59,7 +59,7 @@ export class ProductController {
 
     this.productService
       .delete(id)
-      .then((deleted) => res.status(200).send(deleted))
+      .then((deleted) => res.status(200).json(deleted))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 }

@@ -119,7 +119,7 @@ describe("tests on /api/cart", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(404);
     expect(notFound).toBeTruthy();
-    expect(text).toEqual("Cart not found");
+    expect(text).toContain("Cart not found");
   });
 
   test("DELETE /api/cart/:id must delete a cart", async () => {
@@ -127,7 +127,7 @@ describe("tests on /api/cart", () => {
 
     expect(ok).toBeTruthy();
     expect(statusCode).toBe(200);
-    expect(text).toEqual(`Cart with id ${cart.id} was deleted`);
+    expect(text).toContain(`Cart with id ${cart.id} was deleted`);
   });
 
   test("DELETE /api/cart/:id must fail if cart not found", async () => {
@@ -139,7 +139,7 @@ describe("tests on /api/cart", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toEqual("Cart not found");
+    expect(text).toContain("Cart not found");
   });
 
   test("POST /api/cart/:userId must create a cart", async () => {
@@ -172,7 +172,7 @@ describe("tests on /api/cart", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toEqual(
+    expect(text).toContain(
       `User with id ${mockId} not found, to create a cart you need an user`
     );
   });
@@ -185,7 +185,7 @@ describe("tests on /api/cart", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toEqual("An user can create only one cart");
+    expect(text).toContain("An user can create only one cart");
   });
 
   test("PUT /api/cart/:productId/:cartId must add a product to cart", async () => {
@@ -218,7 +218,7 @@ describe("tests on /api/cart", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toBe("Product or cart not found");
+    expect(text).toContain("Product or cart not found");
   });
 
   test("PUT /api/cart/:productId/:cartId must fail if product is out of stock", async () => {
@@ -237,7 +237,7 @@ describe("tests on /api/cart", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toBe("Product out of stock");
+    expect(text).toContain("Product out of stock");
   });
 
   test("PUT /api/cart/:productId/:cartId must fail if product is the quantity in the body is greater than the stock", async () => {
@@ -250,7 +250,7 @@ describe("tests on /api/cart", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toBe(
+    expect(text).toContain(
       `We only have ${product.stock} units of newProduct, change your quantity!`
     );
   });
@@ -263,7 +263,7 @@ describe("tests on /api/cart", () => {
 
     expect(ok).toBeTruthy();
     expect(statusCode).toBe(200);
-    expect(text).toBe(
+    expect(text).toContain(
       `Quantity on product ${product.id} from cart ${cart.id} was updated`
     );
   });
@@ -277,7 +277,7 @@ describe("tests on /api/cart", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(404);
     expect(notFound).toBeTruthy();
-    expect(text).toBe("Product or cart not found");
+    expect(text).toContain("Product or cart not found");
   });
 
   test("DELETE /api/cart/:productId/:cartId must fail if product not found in cart", async () => {
@@ -288,7 +288,7 @@ describe("tests on /api/cart", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(404);
     expect(notFound).toBeTruthy();
-    expect(text).toBe("Product in cart not found");
+    expect(text).toContain("Product in cart not found");
   });
 
   test("DELETE /api/cart/removeproduct/:productId/:cartId must remove all the units of the product from the cart", async () => {
@@ -300,7 +300,9 @@ describe("tests on /api/cart", () => {
 
     expect(ok).toBeTruthy();
     expect(statusCode).toBe(200);
-    expect(text).toBe(`Product ${product.id} from cart ${cart.id} was deleted`);
+    expect(text).toContain(
+      `Product ${product.id} from cart ${cart.id} was deleted`
+    );
   });
 
   test("DELETE /api/cart/removeproduct/:productId/:cartId must fail if product or cart not found", async () => {
@@ -311,7 +313,7 @@ describe("tests on /api/cart", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(404);
     expect(notFound).toBeTruthy();
-    expect(text).toBe("Product in cart not found");
+    expect(text).toContain("Product in cart not found");
   });
 
   test("DELETE /api/cart/removeproduct/:productId/:cartId must fail if product not found in cart", async () => {
@@ -323,6 +325,6 @@ describe("tests on /api/cart", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(404);
     expect(notFound).toBeTruthy();
-    expect(text).toBe("Product or cart not found");
+    expect(text).toContain("Product or cart not found");
   });
 });

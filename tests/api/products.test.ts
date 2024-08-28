@@ -102,7 +102,7 @@ describe("tests on /api/products", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toBe(`Product with id ${mockId} not found`);
+    expect(text).toContain(`Product with id ${mockId} not found`);
   });
 
   test("POST /api/products must create a product", async () => {
@@ -144,7 +144,7 @@ describe("tests on /api/products", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toEqual("Product with that name already exist");
+    expect(text).toContain("Product with that name already exist");
   });
 
   test("POST /api/products must fail if a required value is missing", async () => {
@@ -160,7 +160,7 @@ describe("tests on /api/products", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toEqual("Category is required");
+    expect(text).toContain("Category is required");
   });
 
   test("POST /api/products must fail if wrong values are provided", async () => {
@@ -177,7 +177,7 @@ describe("tests on /api/products", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toEqual("Price must be a number");
+    expect(text).toContain("Price must be a number");
   });
 
   test("PUT /api/products/:id must update a product", async () => {
@@ -214,7 +214,7 @@ describe("tests on /api/products", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toBe(`Product with id ${mockId} not found`);
+    expect(text).toContain(`Product with id ${mockId} not found`);
   });
 
   test("PUT /api/products/:id must fail if wrong values are provided", async () => {
@@ -227,7 +227,7 @@ describe("tests on /api/products", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(400);
     expect(badRequest).toBeTruthy();
-    expect(text).toBe("Name must be a string");
+    expect(text).toContain("Name must be a string");
   });
 
   test("DELETE /api/products/:id must delete a product", async () => {
@@ -237,7 +237,7 @@ describe("tests on /api/products", () => {
 
     expect(ok).toBeTruthy();
     expect(statusCode).toBe(200);
-    expect(text).toBe(`Product with id ${product.id} was deleted`);
+    expect(text).toContain(`Product with id ${product.id} was deleted`);
   });
 
   test("DELETE /api/products/:id must fail if product not found ", async () => {
@@ -249,6 +249,6 @@ describe("tests on /api/products", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toBe("Product not found");
+    expect(text).toContain("Product not found");
   });
 });

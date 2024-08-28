@@ -18,7 +18,7 @@ describe("tests on orders/controller.ts", () => {
     };
     mockResponse = {
       status: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
     };
     controller = new OrderController(orderServiceMock);
   });
@@ -60,7 +60,7 @@ describe("tests on orders/controller.ts", () => {
     expect(orderServiceMock.getAll).toHaveBeenCalledWith(mockRequest.query);
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("getAllOrders should return 400 if limit or page are not numbers", async () => {
@@ -69,7 +69,7 @@ describe("tests on orders/controller.ts", () => {
     controller.getAllOrders(mockRequest as any, mockResponse);
 
     expect(orderServiceMock.getAll).not.toHaveBeenCalled();
-    expect(mockResponse.send).toHaveBeenCalledWith(
+    expect(mockResponse.json).toHaveBeenCalledWith(
       "Page and limit must be numbers"
     );
     expect(mockResponse.status).toHaveBeenCalledWith(400);
@@ -81,7 +81,7 @@ describe("tests on orders/controller.ts", () => {
     controller.getAllOrders(mockRequest as any, mockResponse);
 
     expect(orderServiceMock.getAll).not.toHaveBeenCalled();
-    expect(mockResponse.send).toHaveBeenCalledWith(
+    expect(mockResponse.json).toHaveBeenCalledWith(
       "Page and limit must be greater than 0"
     );
     expect(mockResponse.status).toHaveBeenCalledWith(400);
@@ -132,7 +132,7 @@ describe("tests on orders/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("getOrderById should handle service errors and call CustomError.handleErrors", async () => {
@@ -189,7 +189,7 @@ describe("tests on orders/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("createOrder should return a error if discount isNaN", async () => {
@@ -206,7 +206,7 @@ describe("tests on orders/controller.ts", () => {
 
     expect(orderServiceMock.create).not.toHaveBeenCalled();
     expect(mockResponse.status).toHaveBeenCalledWith(400);
-    expect(mockResponse.send).toHaveBeenCalledWith("Discount must be a number");
+    expect(mockResponse.json).toHaveBeenCalledWith("Discount must be a number");
   });
 
   test("createOrder should handle service errors and call CustomError.handleErrors", async () => {
@@ -268,7 +268,7 @@ describe("tests on orders/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("updateCategory should handle service errors and call CustomError.handleErrors", async () => {
@@ -304,7 +304,7 @@ describe("tests on orders/controller.ts", () => {
     expect(orderServiceMock.delete).toHaveBeenCalledWith(mockRequest.params.id);
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("deleteCategory should handle service errors and call CustomError.handleErrors", async () => {
@@ -353,7 +353,7 @@ describe("tests on orders/controller.ts", () => {
     expect(orderServiceMock.pay).toHaveBeenCalledWith(mockRequest.params.id);
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("payOrder should handle service errors and call CustomError.handleErrors", async () => {

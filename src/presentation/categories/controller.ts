@@ -13,11 +13,11 @@ export class CategoryController {
 
     const [error, paginationDto] = PaginationDTO.create(+page, +limit);
 
-    if (error) return res.status(400).send(error);
+    if (error) return res.status(400).json(error);
 
     this.categoryService
       .getAll(paginationDto!)
-      .then((categories) => res.status(200).send(categories))
+      .then((categories) => res.status(200).json(categories))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -26,18 +26,18 @@ export class CategoryController {
 
     this.categoryService
       .getById(id)
-      .then((category) => res.status(200).send(category))
+      .then((category) => res.status(200).json(category))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
   createCategory = (req: Request, res: Response) => {
     const [error, createCategoryDto] = CreateCategoryDTO.create(req.body);
 
-    if (error) return res.status(400).send(error);
+    if (error) return res.status(400).json(error);
 
     this.categoryService
       .create(createCategoryDto!)
-      .then((category) => res.status(201).send(category))
+      .then((category) => res.status(201).json(category))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -45,11 +45,11 @@ export class CategoryController {
     const { id } = req.params;
     const [error, updateCategoryDto] = UpdateCategoryDTO.create(req.body);
 
-    if (error) return res.status(400).send(error);
+    if (error) return res.status(400).json(error);
 
     this.categoryService
       .update(id, updateCategoryDto!)
-      .then((updatedCategory) => res.status(201).send(updatedCategory))
+      .then((updatedCategory) => res.status(201).json(updatedCategory))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -58,7 +58,7 @@ export class CategoryController {
 
     this.categoryService
       .delete(id)
-      .then((deletedCategory) => res.status(200).send(deletedCategory))
+      .then((deletedCategory) => res.status(200).json(deletedCategory))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 }

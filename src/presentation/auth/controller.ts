@@ -9,7 +9,7 @@ export class AuthController {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).send("Email and password are required");
+      return res.status(400).json("Email and password are required");
     }
 
     this.authService
@@ -22,7 +22,7 @@ export class AuthController {
             sameSite: "strict",
           })
           .status(200)
-          .send(user)
+          .json(user)
       )
       .catch((error) => CustomError.handleErrors(error, res));
   };
@@ -30,22 +30,22 @@ export class AuthController {
   validateUser = (req: Request, res: Response) => {
     const { token } = req.params;
 
-    if (!token) return res.status(404).send("Token not found");
+    if (!token) return res.status(404).json("Token not found");
 
     this.authService
       .validate(token)
-      .then((userValidated) => res.status(200).send(userValidated))
+      .then((userValidated) => res.status(200).json(userValidated))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
   validateLogin = (req: Request, res: Response) => {
     const { cookie } = req.headers;
 
-    if (!cookie) return res.status(404).send("Cookie not found");
+    if (!cookie) return res.status(404).json("Cookie not found");
 
     this.authService
       .validateLogin(cookie)
-      .then((userValidated) => res.status(200).send(userValidated))
+      .then((userValidated) => res.status(200).json(userValidated))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 }

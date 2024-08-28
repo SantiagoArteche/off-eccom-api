@@ -10,11 +10,11 @@ export class OrderController {
     const { page = 1, limit = 10 } = req.query;
     const [error, paginationDto] = PaginationDTO.create(+page, +limit);
 
-    if (error) return res.status(400).send(error);
+    if (error) return res.status(400).json(error);
 
     this.orderService
       .getAll(paginationDto!)
-      .then((orders) => res.status(200).send(orders))
+      .then((orders) => res.status(200).json(orders))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -23,7 +23,7 @@ export class OrderController {
 
     this.orderService
       .getById(id)
-      .then((order) => res.status(200).send(order))
+      .then((order) => res.status(200).json(order))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -32,11 +32,11 @@ export class OrderController {
     const { discount } = req.body;
 
     if (discount && isNaN(+discount))
-      return res.status(400).send("Discount must be a number");
+      return res.status(400).json("Discount must be a number");
 
     this.orderService
       .create(cartId, discount)
-      .then((order) => res.status(201).send(order))
+      .then((order) => res.status(201).json(order))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -46,7 +46,7 @@ export class OrderController {
 
     this.orderService
       .update(orderId, cartId, discount)
-      .then((order) => res.status(201).send(order))
+      .then((order) => res.status(201).json(order))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -55,7 +55,7 @@ export class OrderController {
 
     this.orderService
       .delete(id)
-      .then((deletedOrder) => res.status(200).send(deletedOrder))
+      .then((deletedOrder) => res.status(200).json(deletedOrder))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 
@@ -64,7 +64,7 @@ export class OrderController {
 
     this.orderService
       .pay(id)
-      .then((orderPaid) => res.status(200).send(orderPaid))
+      .then((orderPaid) => res.status(200).json(orderPaid))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 }

@@ -18,7 +18,7 @@ describe("test on users/controller.ts", () => {
     };
     mockResponse = {
       status: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
     };
     controller = new UserController(userServiceMock);
   });
@@ -69,7 +69,7 @@ describe("test on users/controller.ts", () => {
     expect(userServiceMock.getAll).toHaveBeenCalledTimes(1);
     expect(userServiceMock.getAll).toHaveBeenCalledWith(mockRequest.query);
 
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
     expect(mockResponse.status).toHaveBeenCalledWith(200);
   });
 
@@ -79,7 +79,7 @@ describe("test on users/controller.ts", () => {
     await controller.getUsers(mockRequest as any, mockResponse);
 
     expect(userServiceMock.getAll).not.toHaveBeenCalled();
-    expect(mockResponse.send).toHaveBeenCalledWith(
+    expect(mockResponse.json).toHaveBeenCalledWith(
       "Page and limit must be numbers"
     );
     expect(mockResponse.status).toHaveBeenCalledWith(400);
@@ -120,7 +120,7 @@ describe("test on users/controller.ts", () => {
     expect(userServiceMock.getById).toHaveBeenCalledWith(mockRequest.params.id);
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("getUserById should handle service errors and call CustomError.handleErrors", async () => {
@@ -167,7 +167,7 @@ describe("test on users/controller.ts", () => {
     expect(userServiceMock.create).toHaveBeenCalledWith(mockRequest.body);
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("createUser should return a error if the request body have missing properties or wrong values", async () => {
@@ -184,7 +184,7 @@ describe("test on users/controller.ts", () => {
 
     expect(userServiceMock.create).not.toHaveBeenCalled();
     expect(mockResponse.status).toHaveBeenCalledWith(400);
-    expect(mockResponse.send).toHaveBeenCalledWith("Age is required");
+    expect(mockResponse.json).toHaveBeenCalledWith("Age is required");
   });
 
   test("createUser should handle service errors and call CustomError.handleErrors", async () => {
@@ -241,7 +241,7 @@ describe("test on users/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("updateUserById should return a error if the request body have wrong values", async () => {
@@ -262,7 +262,7 @@ describe("test on users/controller.ts", () => {
 
     expect(userServiceMock.update).not.toHaveBeenCalled();
     expect(mockResponse.status).toHaveBeenCalledWith(400);
-    expect(mockResponse.send).toHaveBeenCalledWith("Age must be a number");
+    expect(mockResponse.json).toHaveBeenCalledWith("Age must be a number");
   });
 
   test("updateUserById should handle service errors and call CustomError.handleErrors", async () => {
@@ -302,7 +302,7 @@ describe("test on users/controller.ts", () => {
     expect(userServiceMock.delete).toHaveBeenCalledWith(mockRequest.params.id);
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("deleteUserById should handle service errors and call CustomError.handleErrors", async () => {
@@ -338,7 +338,7 @@ describe("test on users/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("reSendValidation should handle service errors and call CustomError.handleErrors", async () => {

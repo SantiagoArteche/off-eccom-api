@@ -17,7 +17,7 @@ describe("tests on products/controller.ts", () => {
     };
     mockResponse = {
       status: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
     };
     controller = new ProductController(productMockService);
   });
@@ -69,7 +69,7 @@ describe("tests on products/controller.ts", () => {
     expect(productMockService.getAll).toHaveBeenCalledWith(mockRequest.query);
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("getProducts should return 400 if limit or page are not numbers", async () => {
@@ -78,7 +78,7 @@ describe("tests on products/controller.ts", () => {
     controller.getProducts(mockRequest as any, mockResponse);
 
     expect(productMockService.getAll).not.toHaveBeenCalled();
-    expect(mockResponse.send).toHaveBeenCalledWith(
+    expect(mockResponse.json).toHaveBeenCalledWith(
       "Page and limit must be numbers"
     );
     expect(mockResponse.status).toHaveBeenCalledWith(400);
@@ -90,7 +90,7 @@ describe("tests on products/controller.ts", () => {
     controller.getProducts(mockRequest as any, mockResponse);
 
     expect(productMockService.getAll).not.toHaveBeenCalled();
-    expect(mockResponse.send).toHaveBeenCalledWith(
+    expect(mockResponse.json).toHaveBeenCalledWith(
       "Page and limit must be greater than 0"
     );
     expect(mockResponse.status).toHaveBeenCalledWith(400);
@@ -135,7 +135,7 @@ describe("tests on products/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("getProductById should handle service errors and call CustomError.handleErrors", async () => {
@@ -183,7 +183,7 @@ describe("tests on products/controller.ts", () => {
     });
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("createProduct should return a error if the request body is missing required property or have wrong values", async () => {
@@ -195,7 +195,7 @@ describe("tests on products/controller.ts", () => {
 
     expect(productMockService.create).not.toHaveBeenCalled();
     expect(mockResponse.status).toHaveBeenCalledWith(400);
-    expect(mockResponse.send).toHaveBeenCalledWith("Name is required");
+    expect(mockResponse.json).toHaveBeenCalledWith("Name is required");
   });
 
   test("createProduct should handle service errors and call CustomError.handleErrors", async () => {
@@ -237,7 +237,7 @@ describe("tests on products/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("deleteProductById should handle service errors and call CustomError.handleErrors", async () => {
@@ -293,7 +293,7 @@ describe("tests on products/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(mockResponse.send).toHaveBeenCalledWith(resolvedValue);
+    expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 
   test("updateProduct should return a error if the request body is missing required property or have wrong values", async () => {
@@ -308,7 +308,7 @@ describe("tests on products/controller.ts", () => {
 
     expect(productMockService.update).not.toHaveBeenCalled();
     expect(mockResponse.status).toHaveBeenCalledWith(400);
-    expect(mockResponse.send).toHaveBeenCalledWith("Name must be a string");
+    expect(mockResponse.json).toHaveBeenCalledWith("Name must be a string");
   });
 
   test("updateProduct should handle service errors and call CustomError.handleErrors", async () => {

@@ -92,7 +92,7 @@ describe("tests on /api/users", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toBe(`User with id ${mockId} not found`);
+    expect(text).toContain(`User with id ${mockId} not found`);
   });
 
   test("POST /api/users must create an user", async () => {
@@ -136,7 +136,7 @@ describe("tests on /api/users", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toEqual("Email already in use");
+    expect(text).toContain("Email already in use");
   });
 
   test("POST /api/users must fail if wrong values are provided to body", async () => {
@@ -154,7 +154,7 @@ describe("tests on /api/users", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toEqual("Age must be a number");
+    expect(text).toContain("Age must be a number");
   });
 
   test("POST /api/users must fail if a required value is missing", async () => {
@@ -171,7 +171,7 @@ describe("tests on /api/users", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toEqual("Age is required");
+    expect(text).toContain("Age is required");
   });
 
   test("POST /api/users/:id must re-send validation email ", async () => {
@@ -181,7 +181,7 @@ describe("tests on /api/users", () => {
 
     expect(ok).toBeTruthy();
     expect(statusCode).toBe(200);
-    expect(text).toBe(`Email resend to ${user.email}`);
+    expect(text).toContain(`Email resend to ${user.email}`);
   });
 
   test("POST /api/users/:id must fail if user not found", async () => {
@@ -193,7 +193,7 @@ describe("tests on /api/users", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toBe(`User with id ${mockId} not found`);
+    expect(text).toContain(`User with id ${mockId} not found`);
   });
 
   test("POST /api/users/:id must fail if user is already validated", async () => {
@@ -212,7 +212,7 @@ describe("tests on /api/users", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toBe("User already validated");
+    expect(text).toContain("User already validated");
   });
 
   test("PUT /api/users/:id must update an user", async () => {
@@ -248,7 +248,7 @@ describe("tests on /api/users", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toEqual(`User with id ${mockId} not found`);
+    expect(text).toContain(`User with id ${mockId} not found`);
   });
 
   test("PUT /api/users/:id must fail if wrong values are provided to body", async () => {
@@ -261,7 +261,7 @@ describe("tests on /api/users", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toEqual("Firstname must be a string");
+    expect(text).toContain("Firstname must be a string");
   });
 
   test("DELETE /api/users/:id must delete an user", async () => {
@@ -269,7 +269,7 @@ describe("tests on /api/users", () => {
 
     expect(ok).toBeTruthy();
     expect(statusCode).toBe(200);
-    expect(text).toEqual(`User with id ${user.id} was deleted`);
+    expect(text).toContain(`User with id ${user.id} was deleted`);
   });
 
   test("DELETE /api/users/:id must fail if user not found", async () => {
@@ -281,6 +281,6 @@ describe("tests on /api/users", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toEqual(`User with id ${mockId} not found`);
+    expect(text).toContain(`User with id ${mockId} not found`);
   });
 });

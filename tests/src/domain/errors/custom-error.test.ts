@@ -1,11 +1,10 @@
 import { Response } from "express";
 import { CustomError } from "../../../../src/domain/errors/custom-errors";
 
-
 describe("tests on custom-errors.ts", () => {
   const res = {
     status: jest.fn().mockReturnThis(),
-    send: jest.fn(),
+    json: jest.fn(),
   } as any as Response;
 
   test("must create an instance of a custom error", () => {
@@ -62,7 +61,7 @@ describe("tests on custom-errors.ts", () => {
     CustomError.handleErrors(notFoundError, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.send).toHaveBeenCalledWith("Resource not found");
+    expect(res.json).toHaveBeenCalledWith("Resource not found");
   });
 
   test("should handle non-custom-errors as internal server errors", () => {
@@ -71,6 +70,6 @@ describe("tests on custom-errors.ts", () => {
     CustomError.handleErrors(genericError, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.send).toHaveBeenCalledWith("Internal server error");
+    expect(res.json).toHaveBeenCalledWith("Internal server error");
   });
 });

@@ -43,7 +43,7 @@ describe("test on /api/auth", () => {
 
     expect(ok).toBeTruthy();
     expect(statusCode).toBe(200);
-    expect(text).toEqual(`User with email ${user.email} logged`);
+    expect(text).toContain(`User with email ${user.email} logged`);
   });
 
   test("GET /api/auth/login must fail if cookie not found", async () => {
@@ -52,7 +52,7 @@ describe("test on /api/auth", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toEqual("Cookie not found");
+    expect(text).toContain("Cookie not found");
   });
 
   test("GET /api/auth/login must fail if user is not validated", async () => {
@@ -79,7 +79,7 @@ describe("test on /api/auth", () => {
     expect(ok).toBeFalsy();
     expect(unauthorized).toBeTruthy();
     expect(statusCode).toBe(401);
-    expect(text).toEqual("User not validated");
+    expect(text).toContain("User not validated");
   });
 
   test("GET /api/auth/login must fail if user is not found", async () => {
@@ -101,7 +101,7 @@ describe("test on /api/auth", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toEqual("User not exists");
+    expect(text).toContain("User not exists");
   });
 
   test("POST /api/auth/login must login an user", async () => {
@@ -137,7 +137,7 @@ describe("test on /api/auth", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(404);
     expect(notFound).toBeTruthy();
-    expect(text).toEqual("Wrong credentials");
+    expect(text).toContain("Wrong credentials");
   });
 
   test("POST /api/auth/login must fail if email or password are missing", async () => {
@@ -147,7 +147,7 @@ describe("test on /api/auth", () => {
 
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(400);
-    expect(text).toEqual("Email and password are required");
+    expect(text).toContain("Email and password are required");
   });
 
   test("POST /api/auth/login must fail if wrong values are provided", async () => {
@@ -158,7 +158,7 @@ describe("test on /api/auth", () => {
 
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(500);
-    expect(text).toEqual("Internal server error");
+    expect(text).toContain("Internal server error");
   });
 
   test("GET /api/auth/validate/:token must validate a new user with a valid email", async () => {
@@ -184,7 +184,7 @@ describe("test on /api/auth", () => {
 
     expect(ok).toBeTruthy();
     expect(statusCode).toBe(200);
-    expect(text).toBe(`User with email ${newUser.email} validated`);
+    expect(text).toContain(`User with email ${newUser.email} validated`);
   });
 
   test("GET /api/auth/validate/:token must fail if token is invalid", async () => {
@@ -195,7 +195,7 @@ describe("test on /api/auth", () => {
     expect(ok).toBeFalsy();
     expect(serverError).toBeTruthy();
     expect(statusCode).toBe(500);
-    expect(text).toBe("JsonWebTokenError: jwt malformed");
+    expect(text).toContain("JsonWebTokenError: jwt malformed");
   });
 
   test("GET /api/auth/validate/:token must fail if user is already validated", async () => {
@@ -210,7 +210,7 @@ describe("test on /api/auth", () => {
     expect(ok).toBeFalsy();
     expect(badRequest).toBeTruthy();
     expect(statusCode).toBe(400);
-    expect(text).toBe("User already validated");
+    expect(text).toContain("User already validated");
   });
 
   test("GET /api/auth/validate/:token must fail if user not found", async () => {
@@ -231,6 +231,6 @@ describe("test on /api/auth", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toBe("User not exists");
+    expect(text).toContain("User not exists");
   });
 });

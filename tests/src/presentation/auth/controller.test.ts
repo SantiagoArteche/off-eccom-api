@@ -16,7 +16,7 @@ describe("test on auth/controller.ts", () => {
     };
     mockResponse = {
       status: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
       cookie: jest.fn().mockReturnThis(),
     };
     controller = new AuthController(authServiceMock);
@@ -65,7 +65,7 @@ describe("test on auth/controller.ts", () => {
       }
     );
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith({
+    expect(mockResponse.json).toHaveBeenCalledWith({
       mockRequest,
       token: "newToken",
     });
@@ -78,7 +78,7 @@ describe("test on auth/controller.ts", () => {
 
     expect(authServiceMock.login).not.toHaveBeenCalled(); // Service should not be called
     expect(mockResponse.status).toHaveBeenCalledWith(400);
-    expect(mockResponse.send).toHaveBeenCalledWith(
+    expect(mockResponse.json).toHaveBeenCalledWith(
       "Email and password are required"
     );
   });
@@ -117,7 +117,7 @@ describe("test on auth/controller.ts", () => {
       mockRequest.params.token
     );
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(respMessage);
+    expect(mockResponse.json).toHaveBeenCalledWith(respMessage);
   });
 
   test("validateUser should return a 404 if token is missing", async () => {
@@ -129,7 +129,7 @@ describe("test on auth/controller.ts", () => {
 
     expect(authServiceMock.validate).not.toHaveBeenCalled(); // Service should not be called
     expect(mockResponse.status).toHaveBeenCalledWith(404);
-    expect(mockResponse.send).toHaveBeenCalledWith("Token not found");
+    expect(mockResponse.json).toHaveBeenCalledWith("Token not found");
   });
 
   test("validateUser should handle service errors and call CustomError.handleErrors", async () => {
@@ -172,7 +172,7 @@ describe("test on auth/controller.ts", () => {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.send).toHaveBeenCalledWith(respMessage);
+    expect(mockResponse.json).toHaveBeenCalledWith(respMessage);
   });
 
   test("validateLogin should return 404 if cookie is missing", async () => {
@@ -184,7 +184,7 @@ describe("test on auth/controller.ts", () => {
 
     expect(authServiceMock.validateLogin).not.toHaveBeenCalled(); // Service should not be called
     expect(mockResponse.status).toHaveBeenCalledWith(404);
-    expect(mockResponse.send).toHaveBeenCalledWith("Cookie not found");
+    expect(mockResponse.json).toHaveBeenCalledWith("Cookie not found");
   });
 
   test("validateLogin should handle service errors and call CustomError.handleErrors", async () => {

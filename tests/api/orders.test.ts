@@ -158,7 +158,7 @@ describe("tests on /api/orders", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toBe(`Order with id ${mockId} not found`);
+    expect(text).toContain(`Order with id ${mockId} not found`);
   });
 
   test("DELETE /api/orders/:id must delete an order", async () => {
@@ -168,7 +168,7 @@ describe("tests on /api/orders", () => {
 
     expect(ok).toBeTruthy();
     expect(statusCode).toBe(200);
-    expect(text).toBe(`Order with id ${order.id} was deleted`);
+    expect(text).toContain(`Order with id ${order.id} was deleted`);
   });
 
   test("DELETE /api/orders/:id must fail if order is already paid", async () => {
@@ -180,7 +180,7 @@ describe("tests on /api/orders", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(400);
     expect(badRequest).toBeTruthy();
-    expect(text).toBe(
+    expect(text).toContain(
       "Order already paid, wait until the products arrive to the client and contact the DB Admin to delete the order. We recommend not delete any orders which was completed"
     );
   });
@@ -194,7 +194,7 @@ describe("tests on /api/orders", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(404);
     expect(notFound).toBeTruthy();
-    expect(text).toBe(`Order with id ${mockId} not found`);
+    expect(text).toContain(`Order with id ${mockId} not found`);
   });
 
   test("POST /api/orders/:cartId must create an order", async () => {
@@ -238,7 +238,7 @@ describe("tests on /api/orders", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(400);
     expect(badRequest).toBeTruthy();
-    expect(text).toBe("Discount must be a number");
+    expect(text).toContain("Discount must be a number");
   });
 
   test("POST /api/orders/:cartId must fail if cart not found", async () => {
@@ -250,7 +250,7 @@ describe("tests on /api/orders", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(404);
     expect(notFound).toBeTruthy();
-    expect(text).toBe("Cart not found");
+    expect(text).toContain("Cart not found");
   });
 
   test("POST /api/orders/:cartId must fail if user already have an order", async () => {
@@ -260,7 +260,7 @@ describe("tests on /api/orders", () => {
 
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(400), expect(badRequest).toBeTruthy();
-    expect(text).toBe("You only can make one order at time");
+    expect(text).toContain("You only can make one order at time");
   });
 
   test("POST /api/orders/:cartId must fail if the cart used in the order not have any items", async () => {
@@ -286,7 +286,9 @@ describe("tests on /api/orders", () => {
 
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(400), expect(badRequest).toBeTruthy();
-    expect(text).toBe("Insert products to your cart before make an order!");
+    expect(text).toContain(
+      "Insert products to your cart before make an order!"
+    );
   });
 
   test("POST /api/orders/pay/:id must paid the order", async () => {
@@ -318,7 +320,7 @@ describe("tests on /api/orders", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toEqual(`Order with id ${mockId} not found`);
+    expect(text).toContain(`Order with id ${mockId} not found`);
   });
 
   test("POST /api/orders/pay/:id must fail if order is already paid", async () => {
@@ -330,7 +332,7 @@ describe("tests on /api/orders", () => {
     expect(ok).toBeFalsy();
     expect(serverError).toBeTruthy();
     expect(statusCode).toBe(500);
-    expect(text).toEqual("Order already paid!");
+    expect(text).toContain("Order already paid!");
   });
 
   test("POST /api/orders/pay/:id must fail if user is not validated", async () => {
@@ -349,7 +351,7 @@ describe("tests on /api/orders", () => {
     expect(ok).toBeFalsy();
     expect(forbidden).toBeTruthy();
     expect(statusCode).toBe(403);
-    expect(text).toEqual(
+    expect(text).toContain(
       "Before making an order, you need to validate your account!"
     );
   });
@@ -384,7 +386,7 @@ describe("tests on /api/orders", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(404);
     expect(notFound).toBeTruthy();
-    expect(text).toEqual("Order or cart not found");
+    expect(text).toContain("Order or cart not found");
   });
 
   test("PUT /api/orders/:orderId/:cartId must fail if order is already paid", async () => {
@@ -406,6 +408,6 @@ describe("tests on /api/orders", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(400);
     expect(badRequest).toBeTruthy();
-    expect(text).toEqual("Order already paid");
+    expect(text).toContain("Order already paid");
   });
 });

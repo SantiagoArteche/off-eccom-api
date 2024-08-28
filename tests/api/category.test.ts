@@ -89,7 +89,7 @@ describe("tests on /api/categories", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toEqual(`Category with id ${mockId} not found`);
+    expect(text).toContain(`Category with id ${mockId} not found`);
   });
   test("POST /api/categories must create a new category", async () => {
     const { statusCode, body, ok } = await api.post(`/api/categories`).send({
@@ -119,7 +119,7 @@ describe("tests on /api/categories", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(400);
     expect(badRequest).toBeTruthy();
-    expect(text).toEqual("Category already exist");
+    expect(text).toContain("Category already exist");
   });
 
   test("POST /api/categories must fail if wrong values are provided", async () => {
@@ -132,7 +132,7 @@ describe("tests on /api/categories", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(400);
     expect(badRequest).toBeTruthy();
-    expect(text).toEqual("Name must be a string");
+    expect(text).toContain("Name must be a string");
   });
 
   test("PUT /api/categories/:id must update a category", async () => {
@@ -165,7 +165,7 @@ describe("tests on /api/categories", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(404);
     expect(notFound).toBeTruthy();
-    expect(text).toBe(`Category with id ${mockId} not found`);
+    expect(text).toContain(`Category with id ${mockId} not found`);
   });
 
   test("PUT /api/categories/:id must fail if wrong values are provided", async () => {
@@ -178,7 +178,7 @@ describe("tests on /api/categories", () => {
     expect(ok).toBeFalsy();
     expect(statusCode).toBe(400);
     expect(badRequest).toBeTruthy();
-    expect(text).toBe("Name must be a string");
+    expect(text).toContain("Name must be a string");
   });
 
   test("DELETE /api/categories/:id must delete a category", async () => {
@@ -188,7 +188,7 @@ describe("tests on /api/categories", () => {
 
     expect(ok).toBeTruthy();
     expect(statusCode).toBe(200);
-    expect(text).toBe(`Category with id ${category.id} was deleted`);
+    expect(text).toContain(`Category with id ${category.id} was deleted`);
   });
 
   test("DELETE /api/categories/:id must fail if category not found", async () => {
@@ -200,6 +200,6 @@ describe("tests on /api/categories", () => {
     expect(ok).toBeFalsy();
     expect(notFound).toBeTruthy();
     expect(statusCode).toBe(404);
-    expect(text).toBe("Category not found");
+    expect(text).toContain("Category not found");
   });
 });
