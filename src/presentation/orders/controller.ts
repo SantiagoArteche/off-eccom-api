@@ -46,7 +46,7 @@ export class OrderController {
 
     this.orderService
       .update(orderId, cartId, discount)
-      .then((order) => res.status(201).json(order))
+      .then((order) => res.status(200).json(order))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 

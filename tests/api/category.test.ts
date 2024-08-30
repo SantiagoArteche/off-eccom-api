@@ -143,7 +143,7 @@ describe("tests on /api/categories", () => {
       });
 
     expect(ok).toBeTruthy();
-    expect(statusCode).toBe(201);
+    expect(statusCode).toBe(200);
     expect(body).toEqual({
       updatedCategory: {
         createdAt: expect.any(String),

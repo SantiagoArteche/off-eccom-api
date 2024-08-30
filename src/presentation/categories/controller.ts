@@ -49,7 +49,7 @@ export class CategoryController {
 
     this.categoryService
       .update(id, updateCategoryDto!)
-      .then((updatedCategory) => res.status(201).json(updatedCategory))
+      .then((updatedCategory) => res.status(200).json(updatedCategory))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 

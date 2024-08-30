@@ -194,7 +194,7 @@ describe("tests on /api/cart", () => {
     );
 
     expect(ok).toBeTruthy();
-    expect(statusCode).toBe(201);
+    expect(statusCode).toBe(200);
     expect(body).toEqual({
       msg: "Cart Updated",
       updatedCart: {

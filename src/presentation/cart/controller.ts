@@ -36,7 +36,7 @@ export class CartController {
 
     this.cartService
       .addProductToCart(productId, cartId, createCartItemDto!)
-      .then((cart) => res.status(201).json(cart))
+      .then((cart) => res.status(200).json(cart))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 

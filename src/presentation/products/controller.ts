@@ -50,7 +50,7 @@ export class ProductController {
 
     this.productService
       .update(id, updateProductDto!)
-      .then((updatedProd) => res.status(201).json(updatedProd))
+      .then((updatedProd) => res.status(200).json(updatedProd))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 

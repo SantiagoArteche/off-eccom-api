@@ -363,7 +363,7 @@ describe("tests on /api/orders", () => {
       .send(mockBody);
 
     expect(ok).toBeTruthy();
-    expect(statusCode).toBe(201);
+    expect(statusCode).toBe(200);
     expect(body).toEqual({
       updatedOrder: {
         cartId: expect.any(String),

@@ -45,7 +45,7 @@ export class UserController {
 
     this.userService
       .update(updateUserDto!, id)
-      .then((user) => res.status(201).json(user))
+      .then((user) => res.status(200).json(user))
       .catch((error) => CustomError.handleErrors(error, res));
   };
 

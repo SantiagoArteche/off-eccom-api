@@ -292,7 +292,7 @@ describe("tests on products/controller.ts", () => {
       }
     );
 
-    expect(mockResponse.status).toHaveBeenCalledWith(201);
+    expect(mockResponse.status).toHaveBeenCalledWith(200);
     expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 

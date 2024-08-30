@@ -267,7 +267,7 @@ describe("tests on orders/controller.ts", () => {
       mockRequest.body.discount
     );
 
-    expect(mockResponse.status).toHaveBeenCalledWith(201);
+    expect(mockResponse.status).toHaveBeenCalledWith(200);
     expect(mockResponse.json).toHaveBeenCalledWith(resolvedValue);
   });
 

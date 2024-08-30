@@ -188,7 +188,7 @@ describe("tests on /api/products", () => {
       });
 
     expect(ok).toBeTruthy();
-    expect(statusCode).toBe(201);
+    expect(statusCode).toBe(200);
     expect(body).toEqual({
       updatedProduct: {
         category: "newCategory",
